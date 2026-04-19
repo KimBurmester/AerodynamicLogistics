@@ -3,16 +3,36 @@ body{
     margin: 0;
     padding: 0;
     font-size: 22px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main{
+    flex: 1;
 }
 
 .mr{
     margin-right: 20px;
 }
 
+.mb{
+    margin-bottom: 20px;
+}
+
+.mt{
+    margin-top: 20px;
+}
+
+.ml{
+    margin-left: 20px;
+}
+
 .Header{
     background-color: #193042;
     color: white;
     padding: 20px;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);
 }
 
 .header-container{
@@ -59,4 +79,15 @@ body{
     background-repeat: no-repeat;
     width: 40px;
     height: 40px;
+}
+
+.Footer{
+    background-color: #193042;
+    color: rgb(249, 240, 194);
+}
+
+.footer-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
