@@ -34,6 +34,67 @@ app.post('/artikel', (req, res) => {
     res.json({ id: result.lastInsertRowid, name })
 })
 
+//PUT
+app.put('/artikel/:id', (req, res) => {
+    const id = req.params.id;
+    const { name } = req.body;
+
+    try {
+        const updated = db.prepare(`
+            UPDATE artikel
+            SET name = ?
+            WHERE id = ?
+        `);
+
+        const result = updated.run(name, id);
+
+        if (result.changes === 0) {
+            return res.status(404).json({
+                message: "Artikel nicht gefunden"
+            });
+        }
+
+        res.json({
+            message: "Artikel aktualisiert",
+            changes: result.changes
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            error: err.message
+        });
+    }
+});
+
+//DELETE
+app.delete('/artikel/:id', (req, res) => {
+    const id = req.params.id;
+    try {
+        const deleted = db.prepare(`
+            DELETE FROM artikel
+            WHERE id = ?
+        `);
+
+        const result = deleted.run(id);
+
+        if (result.changes === 0) {
+            return res.status(404).json({
+                message: "Artikel nicht gefunden"
+            });
+        }
+
+        res.json({
+            message: "Artikel gelöscht",
+            changes: result.changes
+        });
+    } catch (err) {
+        res.status(500).json({
+            error: err.message
+        });
+    }
+})
+
+
 //Server starten
 app.listen(PORT, () => {
     console.log(`Server läuft auf Port http://localhost:${PORT}`)
