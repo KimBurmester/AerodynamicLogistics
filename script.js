@@ -65,10 +65,28 @@ document.querySelectorAll('.segmented').forEach(group => {
 
 document.querySelectorAll('.tabs').forEach(group => {
   const tabs = group.querySelectorAll('[data-tab]');
+  const mainContent = document.querySelector('.main-content');
+  const dashboardHTML = mainContent ? mainContent.innerHTML : '';
+
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
       tabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
+
+      if (!mainContent) return;
+      const src = tab.getAttribute('data-tab');
+
+      if (src) {
+        fetch(src)
+          .then(r => r.text())
+          .then(html => {
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+            const main = doc.querySelector('main');
+            mainContent.innerHTML = main ? main.innerHTML : '';
+          });
+      } else {
+        mainContent.innerHTML = dashboardHTML;
+      }
     });
   });
 });

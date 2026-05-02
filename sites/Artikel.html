@@ -3,43 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flugzeug Logistik - Artikel</title>
+    <title>AirLog – Artikelverwaltung</title>
     <link rel="icon" type="image/png" sizes="32x32" href="../logistikapp.png">
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="../style.css">
 </head>
 <body>
-    <header class="Header">
-        <div class="header-container">
-            <div class="header-logo mr"></div>
-            <div class="header-text-container">
-                <div class="header-menu" id="header-menu">
-                    <div class="menu-dropdown" id="menu-dropdown">
-                        <a href="/index.html">Startseite</a>
-                        <a href="#">Flugzeuge</a>
-                        <a href="/sites/Artikel.html">Artikel</a>
-                    </div>
-                </div>
-            <p class="header-title-text">Startseite</p>
-                <div class="user-menu" id="user-menu">
-                    <div class="user-dropdown" id="user-dropdown">
-                        <a href="/index.html">Startseite</a>
-                        <a href="#">Flugzeuge</a>
-                        <a href="/sites/Artikel.html">Artikel</a>
-                    </div>
-                </div>
+<main>
+    <section class="container">
+        <h2 class="section-title">Artikelverwaltung</h2>
+        <div class="grid-3">
+            <div class="field">
+                <label>Artikelbezeichnung</label>
+                <input type="text" placeholder="z. B. Hydraulikschlauch" />
+            </div>
+            <div class="field">
+                <label>Artikelnummer</label>
+                <input type="text" placeholder="z. B. 239324875" />
+            </div>
+            <div class="field">
+                <label>Warengruppe</label>
+                <select>
+                    <option>Hydraulik</option>
+                    <option>Elektronik</option>
+                    <option>Mechanik</option>
+                    <option>Verbrauchsmaterial</option>
+                </select>
+            </div>
+            <div class="field">
+                <label>Einheit</label>
+                <select>
+                    <option>Stück</option>
+                    <option>Liter</option>
+                    <option>Meter</option>
+                    <option>Kilogramm</option>
+                </select>
+            </div>
+            <div class="field">
+                <label>Mindestbestand</label>
+                <input type="text" placeholder="0" />
+            </div>
+            <div class="field">
+                <label>Lagerort</label>
+                <input type="text" placeholder="z. B. Halle A / Regal 3" />
             </div>
         </div>
-    </header>
-    <main class="Main">
-        <div class="main-container">
-            
+        <div class="grid-3">
+            <div class="field">
+                <label>Beschreibung</label>
+                <textarea rows="3" placeholder="Optionale Beschreibung..."></textarea>
+            </div>
         </div>
-    </main>
-    <footer class="Footer">
-        <div class="footer-container mt mb">
-            <div class="footer-text">© 2026 Flugzeug Logistik. Alle Rechte vorbehalten.</div>
+        <div style="display:flex; gap: 8px; margin-top: 8px;">
+            <button class="btn btn-primary">Speichern</button>
+            <button class="btn">Zurücksetzen</button>
         </div>
-    </footer>
+    </section>
+</main>
 </body>
-<script src="/script.js"></script>
 </html>
