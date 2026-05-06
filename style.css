@@ -176,7 +176,7 @@ h1, h2, h3 { margin: 0; font-weight: 500; }
 .container {
   max-width: 1760px;
   margin: 0 auto;
-  padding: 32px 28px 80px;
+  padding: 32px 16px 80px;
 }
 
 .section {
@@ -200,6 +200,7 @@ h1, h2, h3 { margin: 0; font-weight: 500; }
 .row.align-center { align-items: center; }
 .stack { display: flex; flex-direction: column; gap: 10px; }
 .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; margin-bottom: 14px; }
 
 /* ==========================================================================
    Top bar / Theme toggle
@@ -884,4 +885,5 @@ input[type="range"]::-moz-range-thumb {
   .topbar { padding: 10px 14px; }
   .container { padding: 16px 14px 60px; }
   .grid-3 { grid-template-columns: 1fr; }
+  .grid-4 { grid-template-columns: 1fr; }
 }
