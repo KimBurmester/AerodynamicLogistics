@@ -199,8 +199,24 @@ h1, h2, h3 { margin: 0; font-weight: 500; }
 .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .row.align-center { align-items: center; }
 .stack { display: flex; flex-direction: column; gap: 10px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
 .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 14px; }
 .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+
+.form-group-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin: 32px 0 16px;
+  padding-bottom: 10px;
+  border-bottom: 0.5px solid var(--border-subtle);
+}
+
+.section-title + .form-group-label {
+  margin-top: 4px;
+}
 
 /* ==========================================================================
    Top bar / Theme toggle
