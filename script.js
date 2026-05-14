@@ -274,6 +274,59 @@ document.querySelectorAll('.chip-x').forEach(x => {
 
 
 /* ==========================================================================
+   Modal: Neuer Artikel
+   ========================================================================== */
+
+(function initModalNeuerArtikel() {
+  const overlay = document.getElementById('modalNeuerArtikel');
+  if (!overlay) return;
+
+  function openModal() {
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    overlay.querySelector('input, select, textarea')?.focus();
+  }
+
+  function closeModal() {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function resetModal() {
+    overlay.querySelectorAll('input, textarea').forEach(el => (el.value = ''));
+    overlay.querySelectorAll('select').forEach(el => (el.selectedIndex = 0));
+  }
+
+  // Event delegation: works even after .main-content is replaced by tab navigation
+  document.addEventListener('click', e => {
+    if (e.target.closest('[data-action="neuer-artikel"]')) openModal();
+  });
+
+  document.getElementById('modalNeuerArtikelClose')?.addEventListener('click', closeModal);
+
+  document.getElementById('modalNeuerArtikelCancel')?.addEventListener('click', () => {
+    closeModal();
+    resetModal();
+  });
+
+  document.getElementById('modalNeuerArtikelSave')?.addEventListener('click', () => {
+    // Placeholder: hier später API-Call einfügen
+    closeModal();
+    resetModal();
+  });
+
+  // Close on backdrop click
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) { closeModal(); resetModal(); }
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && overlay.classList.contains('open')) { closeModal(); resetModal(); }
+  });
+})();
+
+/* ==========================================================================
     Artikel Manager
    ========================================================================== */
 
