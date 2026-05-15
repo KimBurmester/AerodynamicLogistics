@@ -323,6 +323,219 @@
 </div>
 <!-- ===== /Modal: Position hinzufügen ===== -->
 
+<!-- ===== Modal: Neue Zuweisung (Produktionsplan) ===== -->
+<div class="modal-overlay" id="modalNeueZuweisung" role="dialog" aria-modal="true" aria-labelledby="modalNeueZuweisungTitle">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalNeueZuweisungTitle">Neue Zuweisung anlegen</h3>
+      <button class="modal-close" id="modalNeueZuweisungClose" aria-label="Schließen">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+
+      <!-- Produktionsauftrag auswählen -->
+      <p class="form-group-label">Produktionsauftrag</p>
+      <div class="grid-2">
+        <div class="field"><label>Auftrags-Nr.</label>
+          <select id="mz-auftrag">
+            <option value=""></option>
+            <option>PRD-2026-0001 – Hydraulikeinheit HE-400</option>
+            <option>PRD-2026-0002 – Drucksensorbaugruppe DS-200</option>
+            <option>PRD-2026-0003 – Pneumatikmodul PM-50</option>
+            <option>PRD-2026-0004 – Kugelventilblock KVB-40</option>
+            <option>PRD-2026-0005 – Hydraulikschlauchset HLP</option>
+            <option>PRD-2026-0006 – Steuerventil SV-300</option>
+            <option>PRD-2026-0007 – Druckbehälter DB-60</option>
+            <option>PRD-2026-0008 – Filtereinheit FE-200</option>
+          </select>
+        </div>
+        <div class="field"><label>Produkt / Bezeichnung</label><input type="text" id="mz-produkt" placeholder="z. B. Hydraulikeinheit HE-400" /></div>
+      </div>
+
+      <!-- Zuweisung -->
+      <p class="form-group-label">Zuweisung</p>
+      <div class="grid-4">
+        <div class="field"><label>Halle</label>
+          <select id="mz-halle">
+            <option value=""></option>
+            <option>Halle 1</option>
+            <option>Halle 2</option>
+            <option>Halle 3</option>
+          </select>
+        </div>
+        <div class="field"><label>Produktionslinie</label>
+          <select id="mz-linie">
+            <option value=""></option>
+            <option>Linie 1</option>
+            <option>Linie 2</option>
+            <option>Linie 3</option>
+            <option>Montagelinie A</option>
+            <option>Montagelinie B</option>
+          </select>
+        </div>
+        <div class="field"><label>Takt-Nr.</label><input type="number" id="mz-takt" placeholder="z. B. 3" /></div>
+        <div class="field"><label>Mitarbeiter</label>
+          <select id="mz-mitarbeiter">
+            <option value=""></option>
+            <option>K. Burmester</option>
+            <option>M. Schulz</option>
+            <option>J. Weber</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid-4">
+        <div class="field"><label>Arbeitsschritt</label>
+          <select id="mz-schritt">
+            <option value=""></option>
+            <option>Vorbereitung</option>
+            <option>Zuschnitt</option>
+            <option>Fräsen</option>
+            <option>Bohren</option>
+            <option>Schweißen</option>
+            <option>Montage</option>
+            <option>Qualitätskontrolle</option>
+            <option>Prüfung</option>
+          </select>
+        </div>
+        <div class="field"><label>Maschine</label><input type="text" id="mz-maschine" placeholder="z. B. CNC-Fräse M-04" /></div>
+        <div class="field"><label>Geplanter Start</label><input type="date" id="mz-start" /></div>
+        <div class="field"><label>Geplantes Ende</label><input type="date" id="mz-ende" /></div>
+      </div>
+
+    </div><!-- /.modal-body -->
+
+    <div class="modal-footer">
+      <button class="btn btn-primary" id="modalNeueZuweisungSave">Speichern</button>
+      <button class="btn" id="modalNeueZuweisungCancel">Abbrechen</button>
+    </div>
+  </div>
+</div>
+<!-- ===== /Modal: Neue Zuweisung ===== -->
+
+<!-- ===== Modal: Neuer Prüfbericht (Qualitätssicherung) ===== -->
+<div class="modal-overlay" id="modalNeuerPruefbericht" role="dialog" aria-modal="true" aria-labelledby="modalNeuerPruefberichtTitle">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalNeuerPruefberichtTitle">Neuer Prüfbericht</h3>
+      <button class="modal-close" id="modalNeuerPruefberichtClose" aria-label="Schließen">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+
+      <!-- Stammdaten -->
+      <p class="form-group-label">Stammdaten</p>
+      <div class="grid-4">
+        <div class="field"><label>Artikel / Bezeichnung</label><input type="text" id="qm-artikel" placeholder="z. B. Hydraulikschlauch DN16" /></div>
+        <div class="field"><label>Artikelnummer</label><input type="text" id="qm-artikelnr" placeholder="z. B. 239324875" /></div>
+        <div class="field"><label>Seriennr. / Charge</label><input type="text" id="qm-seriennr" placeholder="z. B. SN-HSL-240001" /></div>
+        <div class="field"><label>Produktionsauftrag</label>
+          <select id="qm-auftrag">
+            <option value=""></option>
+            <option>PRD-2026-0001 – Hydraulikeinheit HE-400</option>
+            <option>PRD-2026-0002 – Drucksensorbaugruppe DS-200</option>
+            <option>PRD-2026-0003 – Pneumatikmodul PM-50</option>
+            <option>PRD-2026-0004 – Kugelventilblock KVB-40</option>
+            <option>PRD-2026-0005 – Hydraulikschlauchset HLP</option>
+            <option>PRD-2026-0006 – Steuerventil SV-300</option>
+            <option>PRD-2026-0007 – Druckbehälter DB-60</option>
+            <option>PRD-2026-0008 – Filtereinheit FE-200</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Prüfdatum</label><input type="date" id="qm-datum" /></div>
+        <div class="field"><label>Prüfer</label>
+          <select id="qm-pruefer">
+            <option value=""></option>
+            <option>K. Burmester</option>
+            <option>M. Schulz</option>
+            <option>J. Weber</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Prüfart & Prüfmittel -->
+      <p class="form-group-label">Prüfart &amp; Prüfmittel</p>
+      <div class="grid-4">
+        <div class="field"><label>Prüfart</label>
+          <select id="qm-pruefart">
+            <option value=""></option>
+            <option>Sichtprüfung</option>
+            <option>Maßkontrolle</option>
+            <option>Drucktest</option>
+            <option>Funktionstest</option>
+            <option>Laboranalyse</option>
+            <option>Schweißnahtprüfung</option>
+            <option>ZfP / Ultraschall</option>
+          </select>
+        </div>
+        <div class="field"><label>Prüfmittel / Gerät</label><input type="text" id="qm-pruefmittel" placeholder="z. B. Manometer 0–600 bar" /></div>
+        <div class="field"><label>Prüfmittelnummer</label><input type="text" id="qm-pruefmittelnr" placeholder="z. B. PM-2026-041" /></div>
+        <div class="field"><label>Kalibrierung gültig bis</label><input type="date" id="qm-kalibrierung" /></div>
+      </div>
+
+      <!-- Prüfergebnis -->
+      <p class="form-group-label">Prüfergebnis</p>
+      <div class="grid-3">
+        <div class="field"><label>Ergebnis</label>
+          <select id="qm-ergebnis">
+            <option value=""></option>
+            <option>i.O. (in Ordnung)</option>
+            <option>Nacharbeit erforderlich</option>
+            <option>n.i.O. (nicht in Ordnung)</option>
+          </select>
+        </div>
+        <div class="field"><label>Fehlerklasse</label>
+          <select id="qm-fehlerklasse">
+            <option value="">–</option>
+            <option>Kritisch</option>
+            <option>Hauptfehler</option>
+            <option>Nebenfehler</option>
+          </select>
+        </div>
+        <div class="field"><label>Maßabweichung</label><input type="text" id="qm-abweichung" placeholder="z. B. +0,3 mm" /></div>
+      </div>
+      <div class="field">
+        <label>Fehlerbeschreibung</label>
+        <textarea rows="2" id="qm-fehlerbeschreibung" placeholder="Beschreibung des festgestellten Fehlers oder der Abweichung…"></textarea>
+      </div>
+
+      <!-- Maßnahmen -->
+      <p class="form-group-label">Maßnahmen</p>
+      <div class="grid-4">
+        <div class="field"><label>Maßnahme</label>
+          <select id="qm-massnahme">
+            <option value="">–</option>
+            <option>Nacharbeit</option>
+            <option>8D-Report</option>
+            <option>Reklamation</option>
+            <option>Entsorgung / Verschrottung</option>
+            <option>CAPA einleiten</option>
+          </select>
+        </div>
+        <div class="field"><label>Verantwortlicher</label><input type="text" id="qm-verantwortlicher" placeholder="z. B. K. Burmester" /></div>
+        <div class="field"><label>Fälligkeit</label><input type="date" id="qm-faelligkeit" /></div>
+        <div class="field"><label>Referenz (8D / FMEA)</label><input type="text" id="qm-referenz" placeholder="z. B. 8D-2026-003" /></div>
+      </div>
+      <div class="field">
+        <label>Bemerkungen</label>
+        <textarea rows="2" id="qm-bemerkungen" placeholder="Weitere Hinweise oder Anmerkungen…"></textarea>
+      </div>
+
+    </div><!-- /.modal-body -->
+
+    <div class="modal-footer">
+      <button class="btn btn-primary" id="modalNeuerPruefberichtSave">Speichern</button>
+      <button class="btn" id="modalNeuerPruefberichtCancel">Abbrechen</button>
+    </div>
+  </div>
+</div>
+<!-- ===== /Modal: Neuer Prüfbericht ===== -->
+
 </body>
 <script src="script.js"></script>
 </html>

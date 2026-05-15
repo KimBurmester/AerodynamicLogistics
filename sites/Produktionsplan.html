@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aero Dynamic Logistic – Produktionsplan</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="../logistikapp.png">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<main>
+<section class="container">
+
+    <div class="page-header">
+        <h2 class="section-title">Produktionsplan</h2>
+        <button class="btn btn-primary btn-sm" data-action="neue-zuweisung">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Neue Zuweisung
+        </button>
+    </div>
+
+    <!-- KPIs -->
+    <div class="grid-4 kpi-row">
+        <div class="metric-card">
+            <div class="metric-label">Zuweisungen gesamt</div>
+            <div class="metric-value">87</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-label">Diese Woche</div>
+            <div class="metric-value metric-value-info">12</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-label">Mitarbeiter im Einsatz</div>
+            <div class="metric-value metric-value-warning">18</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-label">Maschinen belegt</div>
+            <div class="metric-value metric-value-success">9</div>
+        </div>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+        <div class="search-field">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Auftrags-Nr., Produkt oder Mitarbeiter suchen…" />
+        </div>
+        <div class="field min-w-170">
+            <select>
+                <option value="">Alle Produktionsaufträge</option>
+                <option>PRD-2026-0001 – Hydraulikeinheit HE-400</option>
+                <option>PRD-2026-0002 – Drucksensorbaugruppe DS-200</option>
+                <option>PRD-2026-0003 – Pneumatikmodul PM-50</option>
+                <option>PRD-2026-0004 – Kugelventilblock KVB-40</option>
+                <option>PRD-2026-0005 – Hydraulikschlauchset HLP</option>
+                <option>PRD-2026-0006 – Steuerventil SV-300</option>
+                <option>PRD-2026-0007 – Druckbehälter DB-60</option>
+                <option>PRD-2026-0008 – Filtereinheit FE-200</option>
+            </select>
+        </div>
+        <div class="field min-w-150">
+            <select>
+                <option value="">Alle Hallen</option>
+                <option>Halle 1</option>
+                <option>Halle 2</option>
+                <option>Halle 3</option>
+            </select>
+        </div>
+        <div class="field min-w-150">
+            <input type="date" title="Woche ab" />
+        </div>
+    </div>
+
+    <!-- Tabelle -->
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Auftrags-Nr.</th>
+                    <th>Produkt</th>
+                    <th>Halle</th>
+                    <th>Linie / Takt</th>
+                    <th>Mitarbeiter</th>
+                    <th>Arbeitsschritt</th>
+                    <th>Maschine</th>
+                    <th>Von – Bis</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="td-mono">PRD-2026-0002</td>
+                    <td>Drucksensorbaugruppe DS-200</td>
+                    <td>Halle 2</td>
+                    <td>Linie 2 / Takt 3</td>
+                    <td>M. Schulz</td>
+                    <td>Montage</td>
+                    <td class="td-mono">CNC-Fräse M-04</td>
+                    <td class="td-mono">10.01.–14.01.</td>
+                    <td><span class="badge badge-info"><span class="dot"></span>Laufend</span></td>
+                    <td><button class="btn btn-sm btn-ghost" data-action="neue-zuweisung"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
+                </tr>
+                <tr>
+                    <td class="td-mono">PRD-2026-0002</td>
+                    <td>Drucksensorbaugruppe DS-200</td>
+                    <td>Halle 2</td>
+                    <td>Linie 2 / Takt 4</td>
+                    <td>J. Weber</td>
+                    <td>Qualitätskontrolle</td>
+                    <td class="td-mono">Prüfstand P-02</td>
+                    <td class="td-mono">14.01.–16.01.</td>
+                    <td><span class="badge badge-purple"><span class="dot"></span>Offen</span></td>
+                    <td><button class="btn btn-sm btn-ghost" data-action="neue-zuweisung"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
+                </tr>
+                <tr>
+                    <td class="td-mono">PRD-2026-0003</td>
+                    <td>Pneumatikmodul PM-50</td>
+                    <td>Halle 1</td>
+                    <td>Montagelinie A / Takt 1</td>
+                    <td>K. Burmester</td>
+                    <td>Vorbereitung</td>
+                    <td class="td-mono">–</td>
+                    <td class="td-mono">12.01.–13.01.</td>
+                    <td><span class="badge badge-success"><span class="dot"></span>Abgeschlossen</span></td>
+                    <td><button class="btn btn-sm btn-ghost" data-action="neue-zuweisung"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
+                </tr>
+                <tr>
+                    <td class="td-mono">PRD-2026-0003</td>
+                    <td>Pneumatikmodul PM-50</td>
+                    <td>Halle 1</td>
+                    <td>Montagelinie A / Takt 2</td>
+                    <td>M. Schulz</td>
+                    <td>Montage</td>
+                    <td class="td-mono">Montageroboter R-01</td>
+                    <td class="td-mono">13.01.–18.01.</td>
+                    <td><span class="badge badge-info"><span class="dot"></span>Laufend</span></td>
+                    <td><button class="btn btn-sm btn-ghost" data-action="neue-zuweisung"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
+                </tr>
+                <tr>
+                    <td class="td-mono">PRD-2026-0005</td>
+                    <td>Hydraulikschlauchset HLP</td>
+                    <td>Halle 3</td>
+                    <td>Linie 3 / Takt 1</td>
+                    <td>J. Weber</td>
+                    <td>Zuschnitt</td>
+                    <td class="td-mono">Schneidanlage SA-01</td>
+                    <td class="td-mono">18.01.–19.01.</td>
+                    <td><span class="badge badge-danger"><span class="dot"></span>Verzögert</span></td>
+                    <td><button class="btn btn-sm btn-ghost" data-action="neue-zuweisung"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
+                </tr>
+                <tr>
+                    <td class="td-mono">PRD-2026-0006</td>
+                    <td>Steuerventil SV-300</td>
+                    <td>Halle 2</td>
+                    <td>Linie 2 / Takt 2</td>
+                    <td>K. Burmester</td>
+                    <td>Fräsen</td>
+                    <td class="td-mono">CNC-Fräse M-02</td>
+                    <td class="td-mono">20.01.–23.01.</td>
+                    <td><span class="badge badge-purple"><span class="dot"></span>Offen</span></td>
+                    <td><button class="btn btn-sm btn-ghost" data-action="neue-zuweisung"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
+                </tr>
+                <tr>
+                    <td class="td-mono">PRD-2026-0007</td>
+                    <td>Druckbehälter DB-60</td>
+                    <td>Halle 1</td>
+                    <td>Montagelinie B / Takt 1</td>
+                    <td>M. Schulz</td>
+                    <td>Schweißen</td>
+                    <td class="td-mono">Schweißanlage SW-03</td>
+                    <td class="td-mono">22.01.–27.01.</td>
+                    <td><span class="badge badge-purple"><span class="dot"></span>Planung</span></td>
+                    <td><button class="btn btn-sm btn-ghost" data-action="neue-zuweisung"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-row">
+        <span class="pagination-info">Zeigt 1–7 von 87 Zuweisungen</span>
+        <div class="pagination-buttons">
+            <button class="btn btn-sm" disabled>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <button class="btn btn-sm btn-primary">1</button>
+            <button class="btn btn-sm">2</button>
+            <button class="btn btn-sm">3</button>
+            <span class="pagination-ellipsis">…</span>
+            <button class="btn btn-sm">11</button>
+            <button class="btn btn-sm">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+        </div>
+    </div>
+
+</section>
+</main>
+</body>
+</html>
