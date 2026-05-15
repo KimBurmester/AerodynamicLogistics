@@ -1185,10 +1185,10 @@ input[readonly] {
 }
 
 /* ==========================================================================
-   Responsive: ≤ 1130px — Grids auf eine Spalte
+   Responsive: ≤ 1280px — Grids auf eine Spalte
    ========================================================================== */
 
-@media (max-width: 1130px) {
+@media (max-width: 1280px) {
   .grid-2 { grid-template-columns: 1fr; }
   .grid-3 { grid-template-columns: 1fr; }
   .grid-4 { grid-template-columns: 1fr; }
