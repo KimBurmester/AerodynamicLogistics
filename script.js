@@ -116,10 +116,17 @@ const sidebarConfig = {
     sections: [{
       label: 'Auftragsverwaltung',
       items: [
-        { label: 'Neuen Auftrag erstellen', icon: _i('<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/>'), active: true },
-        { label: 'Auftragsdatenbank',       icon: _i('<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>') },
-        { label: 'Bestellung anlegen',      icon: _i('<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>') },
-        { label: 'Auftragsübersicht',       icon: _i('<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>') },
+        { label: 'Neuen Auftrag erstellen', icon: _i('<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/>'), active: true, page: 'sites/Auftrag.html' },
+        { label: 'Auftragsdatenbank',       icon: _i('<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>'), page: 'sites/Auftragsdatenbank.html' },
+      ]
+    }]
+  },
+  'sites/Auftragsdatenbank.html': {
+    sections: [{
+      label: 'Auftragsverwaltung',
+      items: [
+        { label: 'Neuen Auftrag erstellen', icon: _i('<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/>'), page: 'sites/Auftrag.html' },
+        { label: 'Auftragsdatenbank',       icon: _i('<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>'), active: true },
       ]
     }]
   },
@@ -211,6 +218,28 @@ function renderSidebar(src) {
 }
 
 renderSidebar('');
+
+/* ==========================================================================
+   data-navigate: Seitennavigation per Button (z. B. in Datenbankseiten)
+   ========================================================================== */
+
+document.addEventListener('click', e => {
+  const btn = e.target.closest('[data-navigate]');
+  if (!btn) return;
+  const page = btn.getAttribute('data-navigate');
+  const mainContent = document.querySelector('.main-content');
+  if (!mainContent) return;
+  fetch(page)
+    .then(r => r.text())
+    .then(html => {
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const main = doc.querySelector('main');
+      mainContent.innerHTML = main ? main.innerHTML : '';
+    });
+  document.querySelectorAll('.sidebar-item').forEach(i => {
+    i.classList.toggle('active', i.getAttribute('data-page') === page);
+  });
+});
 
 /* ==========================================================================
    Tabs
