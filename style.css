@@ -1150,6 +1150,15 @@ input[type="range"]::-moz-range-thumb {
 .sidebar-section-label ~ .sidebar-section-label { margin-top: 16px; }
 
 /* ==========================================================================
+   Min-width utilities (used on filter-bar fields)
+   ========================================================================== */
+
+.min-w-140 { min-width: 140px; }
+.min-w-150 { min-width: 150px; }
+.min-w-160 { min-width: 160px; }
+.min-w-170 { min-width: 170px; }
+
+/* ==========================================================================
    Readonly input
    ========================================================================== */
 
