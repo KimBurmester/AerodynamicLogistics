@@ -54,7 +54,7 @@
             </select>
         </div>
     </div>
-    <div style="display: flex; gap: 8px; margin-top: 4px; margin-bottom: 36px;">
+    <div class="form-section-actions">
         <button class="btn btn-primary">Lager speichern</button>
         <button class="btn">Zurücksetzen</button>
     </div>
@@ -98,7 +98,7 @@
             <input type="text" id="hallenHoehe" placeholder="z. B. 8" />
         </div>
     </div>
-    <div style="display: flex; gap: 8px; margin-top: 4px; margin-bottom: 36px;">
+    <div class="form-section-actions">
         <button class="btn btn-primary">Halle speichern</button>
         <button class="btn">Zurücksetzen</button>
     </div>
@@ -155,11 +155,10 @@
         </div>
         <div class="field">
             <label>Lagerplatz-ID (automatisch)</label>
-            <input type="text" id="platzId" readonly placeholder="LGR-001-H01-R03-F05-E02"
-                   style="background: var(--bg-secondary); color: var(--text-tertiary);" />
+            <input type="text" id="platzId" readonly placeholder="LGR-001-H01-R03-F05-E02" />
         </div>
     </div>
-    <div style="display: flex; gap: 8px; margin-top: 4px; margin-bottom: 36px;">
+    <div class="form-section-actions">
         <button class="btn btn-primary">Lagerplatz speichern</button>
         <button class="btn">Zurücksetzen</button>
     </div>
@@ -219,7 +218,7 @@
         <label>Vorschau (generierte Lagerplatz-IDs)</label>
         <div class="generator-preview" id="generatorVorschau">Einstellungen wählen und auf „Generieren" klicken…</div>
     </div>
-    <div style="display: flex; gap: 8px; margin-top: 12px;">
+    <div class="form-actions">
         <button class="btn btn-primary" id="btnGenerieren">Generieren</button>
         <button class="btn" id="btnUebernehmen" disabled>Alle übernehmen</button>
         <button class="btn" id="btnGeneratorReset">Zurücksetzen</button>
@@ -227,45 +226,5 @@
 
 </section>
 </main>
-<script>
-(function() {
-    const pad = (n, len) => String(n).padStart(len, '0');
-
-    document.getElementById('btnGenerieren').addEventListener('click', () => {
-        const praefix = document.getElementById('genPraefix').value.trim() || 'LGR';
-        const regale = parseInt(document.getElementById('genRegale').value) || 0;
-        const faecher = parseInt(document.getElementById('genFaecher').value) || 0;
-        const ebenen = parseInt(document.getElementById('genEbenen').value) || 0;
-
-        if (!regale || !faecher || !ebenen) {
-            document.getElementById('generatorVorschau').textContent = 'Bitte Regalanzahl, Fächer und Ebenen angeben.';
-            return;
-        }
-
-        const ids = [];
-        for (let r = 1; r <= regale; r++) {
-            for (let f = 1; f <= faecher; f++) {
-                for (let e = 1; e <= ebenen; e++) {
-                    ids.push(`${praefix}-R${pad(r,2)}-F${pad(f,2)}-E${pad(e,2)}`);
-                }
-            }
-        }
-
-        document.getElementById('generatorVorschau').textContent =
-            `${ids.length} Lagerplätze generiert:\n\n` + ids.join('\n');
-        document.getElementById('btnUebernehmen').disabled = false;
-    });
-
-    document.getElementById('btnGeneratorReset').addEventListener('click', () => {
-        ['genLager','genHalle','genPraefix','genRegale','genFaecher','genEbenen'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el.tagName === 'SELECT') el.selectedIndex = 0;
-            else el.value = '';
-        });
-        document.getElementById('generatorVorschau').textContent = 'Einstellungen wählen und auf „Generieren" klicken…';
-        document.getElementById('btnUebernehmen').disabled = true;
-    });
-})();
-</script>
 </body>
 </html>

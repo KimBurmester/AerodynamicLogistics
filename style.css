@@ -1071,6 +1071,95 @@ input[type="range"]::-moz-range-thumb {
 }
 
 /* ==========================================================================
+   Form Actions
+   ========================================================================== */
+
+.form-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.form-section-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+  margin-bottom: 36px;
+}
+
+/* ==========================================================================
+   KPI / Metric helpers
+   ========================================================================== */
+
+.kpi-row { margin-bottom: 24px; }
+
+.metric-value-success { color: var(--success-solid); }
+.metric-value-danger  { color: var(--danger-solid); }
+.metric-value-warning { color: var(--warning-solid); }
+.metric-value-info    { color: var(--info-solid); }
+
+/* ==========================================================================
+   Pagination
+   ========================================================================== */
+
+.pagination-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+.pagination-info {
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+
+.pagination-buttons {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.pagination-ellipsis {
+  padding: 0 4px;
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+
+/* ==========================================================================
+   Legend row
+   ========================================================================== */
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.legend-label {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+/* ==========================================================================
+   Sidebar section spacing (subsequent labels)
+   ========================================================================== */
+
+.sidebar-section-label ~ .sidebar-section-label { margin-top: 16px; }
+
+/* ==========================================================================
+   Readonly input
+   ========================================================================== */
+
+input[readonly] {
+  background: var(--bg-secondary);
+  color: var(--text-tertiary);
+  cursor: default;
+}
+
+/* ==========================================================================
    Responsive: ≤ 1030px — kurze Tab-Labels, kompaktere Topbar
    ========================================================================== */
 

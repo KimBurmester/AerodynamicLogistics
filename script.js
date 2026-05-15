@@ -164,8 +164,8 @@ function renderSidebar(src) {
 
   const config = sidebarConfig[src] || sidebarConfig[''];
 
-  nav.innerHTML = config.sections.map((section, i) => `
-    <span class="sidebar-section-label"${i > 0 ? ' style="margin-top:16px"' : ''}>${section.label}</span>
+  nav.innerHTML = config.sections.map((section) => `
+    <span class="sidebar-section-label">${section.label}</span>
     ${section.items.map(item => `
       <a href="#" class="sidebar-item${item.active ? ' active' : ''}"${item.page ? ` data-page="${item.page}"` : ''}>
         ${item.icon} ${item.label}
@@ -325,6 +325,50 @@ document.querySelectorAll('.chip-x').forEach(x => {
     if (e.key === 'Escape' && overlay.classList.contains('open')) { closeModal(); resetModal(); }
   });
 })();
+
+/* ==========================================================================
+   LagerStandorte: Lagerplatz Generator (Event-Delegation für SPA)
+   ========================================================================== */
+
+document.addEventListener('click', e => {
+  if (e.target.closest('#btnGenerieren')) {
+    const pad = (n, len) => String(n).padStart(len, '0');
+    const praefix = document.getElementById('genPraefix')?.value.trim() || 'LGR';
+    const regale  = parseInt(document.getElementById('genRegale')?.value)  || 0;
+    const faecher = parseInt(document.getElementById('genFaecher')?.value) || 0;
+    const ebenen  = parseInt(document.getElementById('genEbenen')?.value)  || 0;
+    const vorschau = document.getElementById('generatorVorschau');
+    if (!vorschau) return;
+
+    if (!regale || !faecher || !ebenen) {
+      vorschau.textContent = 'Bitte Regalanzahl, Fächer und Ebenen angeben.';
+      return;
+    }
+
+    const ids = [];
+    for (let r = 1; r <= regale; r++)
+      for (let f = 1; f <= faecher; f++)
+        for (let ev = 1; ev <= ebenen; ev++)
+          ids.push(`${praefix}-R${pad(r,2)}-F${pad(f,2)}-E${pad(ev,2)}`);
+
+    vorschau.textContent = `${ids.length} Lagerplätze generiert:\n\n` + ids.join('\n');
+    const btnU = document.getElementById('btnUebernehmen');
+    if (btnU) btnU.disabled = false;
+  }
+
+  if (e.target.closest('#btnGeneratorReset')) {
+    ['genLager','genHalle','genPraefix','genRegale','genFaecher','genEbenen'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (el.tagName === 'SELECT') el.selectedIndex = 0;
+      else el.value = '';
+    });
+    const vorschau = document.getElementById('generatorVorschau');
+    if (vorschau) vorschau.textContent = 'Einstellungen wählen und auf „Generieren" klicken…';
+    const btnU = document.getElementById('btnUebernehmen');
+    if (btnU) btnU.disabled = true;
+  }
+});
 
 /* ==========================================================================
     Artikel Manager
