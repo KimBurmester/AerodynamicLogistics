@@ -340,6 +340,104 @@ document.querySelectorAll('.chip-x').forEach(x => {
 })();
 
 /* ==========================================================================
+   Modal: Neue Stückliste
+   ========================================================================== */
+
+(function initModalNeueStueckliste() {
+  const overlay = document.getElementById('modalNeueStueckliste');
+  if (!overlay) return;
+
+  function openModal() {
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    overlay.querySelector('input, select, textarea')?.focus();
+  }
+
+  function closeModal() {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function resetModal() {
+    overlay.querySelectorAll('input, textarea').forEach(el => (el.value = ''));
+    overlay.querySelectorAll('select').forEach(el => (el.selectedIndex = 0));
+  }
+
+  document.addEventListener('click', e => {
+    if (e.target.closest('[data-action="neue-stueckliste"]')) openModal();
+  });
+
+  document.getElementById('modalNeueStuecklisteClose')?.addEventListener('click', closeModal);
+
+  document.getElementById('modalNeueStuecklisteCancel')?.addEventListener('click', () => {
+    closeModal();
+    resetModal();
+  });
+
+  document.getElementById('modalNeueStuecklisteSave')?.addEventListener('click', () => {
+    closeModal();
+    resetModal();
+  });
+
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) { closeModal(); resetModal(); }
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && overlay.classList.contains('open')) { closeModal(); resetModal(); }
+  });
+})();
+
+/* ==========================================================================
+   Modal: Position hinzufügen
+   ========================================================================== */
+
+(function initModalPositionHinzufuegen() {
+  const overlay = document.getElementById('modalPositionHinzufuegen');
+  if (!overlay) return;
+
+  function openModal() {
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    overlay.querySelector('input, select, textarea')?.focus();
+  }
+
+  function closeModal() {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function resetModal() {
+    overlay.querySelectorAll('input, textarea').forEach(el => (el.value = ''));
+    overlay.querySelectorAll('select').forEach(el => (el.selectedIndex = 0));
+  }
+
+  document.addEventListener('click', e => {
+    if (e.target.closest('[data-action="position-hinzufuegen"]')) openModal();
+  });
+
+  document.getElementById('modalPositionClose')?.addEventListener('click', closeModal);
+
+  document.getElementById('modalPositionCancel')?.addEventListener('click', () => {
+    closeModal();
+    resetModal();
+  });
+
+  document.getElementById('modalPositionSave')?.addEventListener('click', () => {
+    closeModal();
+    resetModal();
+  });
+
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) { closeModal(); resetModal(); }
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && overlay.classList.contains('open')) { closeModal(); resetModal(); }
+  });
+})();
+
+/* ==========================================================================
    LagerStandorte: Lagerplatz Generator (Event-Delegation für SPA)
    ========================================================================== */
 

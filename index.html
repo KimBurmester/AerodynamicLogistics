@@ -233,6 +233,96 @@
 </div>
 <!-- ===== /Modal: Neuer Artikel ===== -->
 
+<!-- ===== Modal: Neue Stückliste ===== -->
+<div class="modal-overlay" id="modalNeueStueckliste" role="dialog" aria-modal="true" aria-labelledby="modalNeueStuecklisteTitle">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalNeueStuecklisteTitle">Neue Stückliste anlegen</h3>
+      <button class="modal-close" id="modalNeueStuecklisteClose" aria-label="Schließen">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+
+      <!-- Kopfdaten -->
+      <p class="form-group-label">Kopfdaten</p>
+      <div class="grid-4">
+        <div class="field"><label>BOM-Nummer</label><input type="text" id="ms-bomNummer" placeholder="z. B. BOM-HE400-v3" /></div>
+        <div class="field"><label>Produktname</label><input type="text" id="ms-produktname" placeholder="z. B. Hydraulikeinheit HE-400" /></div>
+        <div class="field"><label>Artikelnummer</label><input type="text" id="ms-artikelnummer" placeholder="z. B. ART-2026-0042" /></div>
+        <div class="field"><label>Version / Revision</label><input type="text" id="ms-version" placeholder="z. B. Rev. 3.1" /></div>
+      </div>
+      <div class="grid-4">
+        <div class="field"><label>Status</label>
+          <select id="ms-status">
+            <option value=""></option>
+            <option>Entwurf</option>
+            <option>Freigegeben</option>
+            <option>Gesperrt</option>
+            <option>Archiviert</option>
+          </select>
+        </div>
+        <div class="field"><label>Gültig ab</label><input type="date" id="ms-gueltigAb" /></div>
+        <div class="field"><label>Gültig bis</label><input type="date" id="ms-gueltigBis" /></div>
+        <div class="field"><label>Ersteller</label><input type="text" id="ms-ersteller" placeholder="z. B. K. Burmester" /></div>
+      </div>
+
+    </div><!-- /.modal-body -->
+
+    <div class="modal-footer">
+      <button class="btn btn-primary" id="modalNeueStuecklisteSave">Speichern</button>
+      <button class="btn" id="modalNeueStuecklisteCancel">Abbrechen</button>
+    </div>
+  </div>
+</div>
+<!-- ===== /Modal: Neue Stückliste ===== -->
+
+<!-- ===== Modal: Position hinzufügen ===== -->
+<div class="modal-overlay" id="modalPositionHinzufuegen" role="dialog" aria-modal="true" aria-labelledby="modalPositionTitle">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalPositionTitle">Position hinzufügen</h3>
+      <button class="modal-close" id="modalPositionClose" aria-label="Schließen">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+
+      <!-- Positionsdaten -->
+      <p class="form-group-label">Positionsdaten</p>
+      <div class="grid-4">
+        <div class="field"><label>Artikelnummer</label><input type="text" id="mp-artikelnummer" placeholder="z. B. 239324875" /></div>
+        <div class="field"><label>Bezeichnung</label><input type="text" id="mp-bezeichnung" placeholder="z. B. Hydraulikschlauch DN16" /></div>
+        <div class="field"><label>Menge</label><input type="number" id="mp-menge" placeholder="z. B. 4" /></div>
+        <div class="field"><label>Einheit</label>
+          <select id="mp-einheit">
+            <option>Stück</option>
+            <option>Liter</option>
+            <option>Meter</option>
+            <option>Kilogramm</option>
+            <option>Set</option>
+            <option>Paar</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid-3">
+        <div class="field"><label>Ebene</label><input type="number" id="mp-ebene" placeholder="z. B. 1" /></div>
+        <div class="field"><label>Lagerort</label><input type="text" id="mp-lagerort" placeholder="z. B. Halle 1 / R3 / F2" /></div>
+        <div class="field"><label>Kommentar</label><input type="text" id="mp-kommentar" placeholder="z. B. Druckbeständig bis 400 bar" /></div>
+      </div>
+
+    </div><!-- /.modal-body -->
+
+    <div class="modal-footer">
+      <button class="btn btn-primary" id="modalPositionSave">Speichern</button>
+      <button class="btn" id="modalPositionCancel">Abbrechen</button>
+    </div>
+  </div>
+</div>
+<!-- ===== /Modal: Position hinzufügen ===== -->
+
 </body>
 <script src="script.js"></script>
 </html>
