@@ -3,70 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AirLog – Produktion</title>
+    <title>Aero Dynamic Logistic – Produktion</title>
     <link rel="icon" type="image/png" sizes="32x32" href="../logistikapp.png">
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
 <main>
-    <section class="container">
-        <h2 class="section-title">Produktion</h2>
-        <div class="grid-3">
-            <div class="field">
-                <label>Artikelbezeichnung</label>
-                <input type="text" id="artikelbezeichnung" placeholder="z. B. Hydraulikschlauch" />
-            </div>
-            <div class="field">
-                <label>Artikelnummer</label>
-                <input type="text" id="artikelnummer" placeholder="z. B. 239324875" />
-            </div>
-            <div class="field">
-                <label>SN-Nummer</label>
-                <input type="text" id="seriennummer" placeholder="z. B. 239324875" />
-            </div>
-            <div class="field">
-                <label>Maschinennummer</label>
-                <input type="text" id="maschinennummer" placeholder="z. B. 239324875" />
-            </div>
-            <div class="field">
-                <label>Warengruppe</label>
-                <select>
-                    <option>Hydraulik</option>
-                    <option>Elektronik</option>
-                    <option>Mechanik</option>
-                    <option>Verbrauchsmaterial</option>
-                </select>
-            </div>
-            <div class="field">
-                <label>Einheit</label>
-                <select>
-                    <option>Stück</option>
-                    <option>Liter</option>
-                    <option>Meter</option>
-                    <option>Kilogramm</option>
-                </select>
-            </div>
-            <div class="field">
-                <label>Mindestbestand</label>
-                <input type="text" id="Mindestbestand" placeholder="0" />
-            </div>
-            <div class="field">
-                <label>Lagerort</label>
-                <input type="text" id="Lagerort" placeholder="z. B. Halle A / Regal 3" />
-            </div>
+<section class="container">
+    <h2 class="section-title">Produkt- und Fertigungsinformationen</h2>
+
+    <!-- Produktdaten -->
+    <p class="form-group-label">Produktdaten</p>
+    <div class="grid-4">
+        <div class="field">
+            <label>Produktname</label>
+            <input type="text" id="produktname" placeholder="z. B. Hydraulikeinheit HE-400" />
         </div>
-        <div class="grid-3">
-            <div class="field">
-                <label>Beschreibung</label>
-                <textarea rows="3" id="beschreibung" placeholder="Optionale Beschreibung..."></textarea>
-            </div>
+        <div class="field">
+            <label>Artikelnummer</label>
+            <input type="text" id="artikelnummer" placeholder="z. B. ART-2026-0042" />
         </div>
-        <div class="form-actions">
-            <button class="btn btn-primary">Speichern</button>
-            <button class="btn">Zurücksetzen</button>
+        <div class="field">
+            <label>Seriennummer</label>
+            <input type="text" id="seriennummer" placeholder="z. B. SN-HE-260001" />
         </div>
-    </section>
+        <div class="field">
+            <label>Chargennummer</label>
+            <input type="text" id="chargennummer" placeholder="z. B. CH-2026-018" />
+        </div>
+    </div>
+    <div class="grid-4">
+        <div class="field">
+            <label>Version / Revision</label>
+            <input type="text" id="version" placeholder="z. B. Rev. 3.1" />
+        </div>
+        <div class="field">
+            <label>Stückliste (BOM)</label>
+            <input type="text" id="bom" placeholder="z. B. BOM-HE400-v3" />
+        </div>
+        <div class="field">
+            <label>Technische Zeichnungen</label>
+            <input type="text" id="zeichnungen" placeholder="z. B. DRW-HE400-001" />
+        </div>
+        <div class="field">
+            <label>CAD-Dateien</label>
+            <input type="text" id="cad" placeholder="z. B. CAD-HE400-v3.step" />
+        </div>
+    </div>
+    <div class="grid-4">
+        <div class="field">
+            <label>Spezifikationen</label>
+            <input type="text" id="spezifikationen" placeholder="z. B. ISO 4413" />
+        </div>
+        <div class="field">
+            <label>Zertifizierungsanforderungen</label>
+            <input type="text" id="zertifizierung" placeholder="z. B. CE, DIN EN 9100" />
+        </div>
+        <div class="field">
+            <label>Qualitätsstandards</label>
+            <input type="text" id="qualitaet" placeholder="z. B. ISO 9001:2015" />
+        </div>
+        <div class="field">
+            <label>Sicherheitsanforderungen</label>
+            <input type="text" id="sicherheit" placeholder="z. B. ATEX Zone 2" />
+        </div>
+    </div>
+
+    <!-- Produktionsinformationen -->
+    <p class="form-group-label">Produktionsinformationen</p>
+    <div class="grid-4">
+        <div class="field">
+            <label>Produktionsmenge</label>
+            <input type="number" id="produktionsmenge" placeholder="z. B. 50" />
+        </div>
+        <div class="field">
+            <label>Produktionslinie</label>
+            <select id="produktionslinie">
+                <option value=""></option>
+                <option>Linie 1</option>
+                <option>Linie 2</option>
+                <option>Linie 3</option>
+                <option>Montagelinie A</option>
+                <option>Montagelinie B</option>
+            </select>
+        </div>
+        <div class="field">
+            <label>Arbeitsgänge</label>
+            <input type="number" id="arbeitsschritte" placeholder="z. B. 8" />
+        </div>
+        <div class="field">
+            <label>Fertigungsreihenfolge</label>
+            <input type="text" id="fertigungsreihenfolge" placeholder="z. B. Fräsen → Bohren → Montage" />
+        </div>
+    </div>
+    <div class="grid-4">
+        <div class="field">
+            <label>Maschinenzuordnung</label>
+            <input type="text" id="maschine" placeholder="z. B. CNC-Fräse M-04" />
+        </div>
+        <div class="field">
+            <label>Benötigte Werkzeuge</label>
+            <input type="text" id="werkzeuge" placeholder="z. B. Bohrer Ø12, Gewindeschneider" />
+        </div>
+        <div class="field">
+            <label>Arbeitszeitplanung</label>
+            <input type="date" id="arbeitszeitplanung" />
+        </div>
+        <div class="field">
+            <label>Schichtplanung</label>
+            <select id="schicht">
+                <option value=""></option>
+                <option>Frühschicht</option>
+                <option>Spätschicht</option>
+                <option>Nachtschicht</option>
+                <option>Vollbetrieb (24 h)</option>
+            </select>
+        </div>
+    </div>
+    <div class="grid-2">
+        <div class="field">
+            <label>Ressourcenbedarf</label>
+            <textarea rows="3" id="ressourcenbedarf" placeholder="z. B. Aluminium 6061, Hydrauliköl HLP 46, Schrauben M8 …"></textarea>
+        </div>
+        <div class="field">
+            <label>Prüf- und Testschritte</label>
+            <textarea rows="3" id="pruefschritte" placeholder="z. B. Drucktest 400 bar, Dichtheitsprüfung, Funktionstest …"></textarea>
+        </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="form-actions">
+        <button class="btn btn-primary">Speichern</button>
+        <button class="btn">Zurücksetzen</button>
+    </div>
+</section>
 </main>
 </body>
-<script src="script.js"></script>
 </html>
