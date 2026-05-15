@@ -536,6 +536,149 @@
 </div>
 <!-- ===== /Modal: Neuer Prüfbericht ===== -->
 
+<!-- ===== Modal: Neues Gerät (Instandhaltung) ===== -->
+<div class="modal-overlay" id="modalNeuesGeraet" role="dialog" aria-modal="true" aria-labelledby="modalNeuesGeraetTitle">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalNeuesGeraetTitle">Neues Gerät anlegen</h3>
+      <button class="modal-close" id="modalNeuesGeraetClose" aria-label="Schließen">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+
+      <p class="form-group-label">Stammdaten</p>
+      <div class="grid-4">
+        <div class="field"><label>Bezeichnung</label><input type="text" id="ng-bezeichnung" placeholder="z. B. Hallenkran HK-500" /></div>
+        <div class="field"><label>Gerätenummer</label><input type="text" id="ng-geraetennr" placeholder="z. B. GRT-0043" /></div>
+        <div class="field"><label>Kategorie</label>
+          <select id="ng-kategorie">
+            <option value=""></option>
+            <option>Produktionsmaschinen</option>
+            <option>Fördertechnik</option>
+            <option>Flurförderfahrzeuge</option>
+            <option>Fahrzeuge</option>
+            <option>Halleninfrastruktur</option>
+            <option>Elektrotechnik</option>
+            <option>Druckluft &amp; Hydraulik</option>
+            <option>Prüfmittel</option>
+          </select>
+        </div>
+        <div class="field"><label>Status</label>
+          <select id="ng-status">
+            <option value=""></option>
+            <option>Aktiv</option>
+            <option>In Wartung</option>
+            <option>Defekt</option>
+            <option>Außer Betrieb</option>
+          </select>
+        </div>
+      </div>
+
+      <p class="form-group-label">Standort</p>
+      <div class="grid-4">
+        <div class="field"><label>Halle / Bereich</label>
+          <select id="ng-halle">
+            <option value=""></option>
+            <option>Halle 1</option>
+            <option>Halle 2</option>
+            <option>Halle 3</option>
+            <option>Außengelände</option>
+            <option>Werkstatt</option>
+            <option>Bürogebäude</option>
+            <option>Serverraum</option>
+          </select>
+        </div>
+        <div class="field"><label>Standort / Achse</label><input type="text" id="ng-standort" placeholder="z. B. Linie A / Achse 3" /></div>
+        <div class="field"><label>Kostenstelle</label><input type="text" id="ng-kostenstelle" placeholder="z. B. KST-5100" /></div>
+        <div class="field"><label>Verantwortlicher</label><input type="text" id="ng-verantwortlicher" placeholder="z. B. T. Weber" /></div>
+      </div>
+
+      <p class="form-group-label">Technische Daten</p>
+      <div class="grid-4">
+        <div class="field"><label>Hersteller</label><input type="text" id="ng-hersteller" placeholder="z. B. Demag Cranes" /></div>
+        <div class="field"><label>Modell / Typ</label><input type="text" id="ng-modell" placeholder="z. B. HK-500" /></div>
+        <div class="field"><label>Seriennummer</label><input type="text" id="ng-seriennr" placeholder="z. B. DCR-500-2026-001" /></div>
+        <div class="field"><label>Baujahr</label><input type="number" id="ng-baujahr" placeholder="z. B. 2024" min="1980" max="2030" /></div>
+      </div>
+
+      <p class="form-group-label">Wartungsintervall</p>
+      <div class="grid-4">
+        <div class="field"><label>Wartungsintervall</label>
+          <select id="ng-intervall">
+            <option value=""></option>
+            <option>Täglich</option>
+            <option>Wöchentlich</option>
+            <option>Monatlich</option>
+            <option>Quartalsweise</option>
+            <option>Halbjährlich</option>
+            <option>Jährlich</option>
+            <option>Nach Betriebsstunden</option>
+          </select>
+        </div>
+        <div class="field"><label>Nächster Service</label><input type="date" id="ng-naechster-service" /></div>
+        <div class="field"><label>Prüfpflicht (DGUV / TÜV)</label>
+          <select id="ng-pruefpflicht">
+            <option value=""></option>
+            <option>Ja – jährlich</option>
+            <option>Ja – alle 2 Jahre</option>
+            <option>Ja – alle 4 Jahre</option>
+            <option>Nein</option>
+          </select>
+        </div>
+        <div class="field"><label>Betriebsstunden (aktuell)</label><input type="number" id="ng-betriebsstunden" placeholder="0" min="0" /></div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" id="modalNeuesGeraetSave">Speichern</button>
+      <button class="btn" id="modalNeuesGeraetCancel">Abbrechen</button>
+    </div>
+  </div>
+</div>
+<!-- ===== /Modal: Neues Gerät (Instandhaltung) ===== -->
+
+<!-- ===== Modal: Wartung – Material / Ersatzteil hinzufügen ===== -->
+<div class="modal-overlay" id="modalWartungMaterial" role="dialog" aria-modal="true" aria-labelledby="modalWartungMaterialTitle">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalWartungMaterialTitle">Ersatzteil / Material hinzufügen</h3>
+      <button class="modal-close" id="modalWartungMaterialClose" aria-label="Schließen">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="grid-4">
+        <div class="field"><label>Artikelnummer</label><input type="text" id="wm-artikelnummer" placeholder="z. B. 847362918" /></div>
+        <div class="field"><label>Bezeichnung</label><input type="text" id="wm-bezeichnung" placeholder="z. B. O-Ring 50×3 NBR" /></div>
+        <div class="field"><label>Menge</label><input type="number" id="wm-menge" placeholder="0" min="1" /></div>
+        <div class="field"><label>Einheit</label>
+          <select id="wm-einheit">
+            <option value=""></option>
+            <option>Stück</option>
+            <option>Liter</option>
+            <option>Meter</option>
+            <option>Kilogramm</option>
+            <option>Rolle</option>
+            <option>Paket</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid-4">
+        <div class="field"><label>Lagerort</label><input type="text" id="wm-lagerort" placeholder="z. B. Halle 1 / Regal A2" /></div>
+        <div class="field"><label>Hersteller / Lieferant</label><input type="text" id="wm-lieferant" placeholder="z. B. Bosch Rexroth AG" /></div>
+        <div class="field"><label>Ersatzteilnr. (Hersteller)</label><input type="text" id="wm-ersatzteilnr" placeholder="Optional" /></div>
+        <div class="field"><label>Bemerkung</label><input type="text" id="wm-bemerkung" placeholder="Optional" /></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" id="modalWartungMaterialSave">Hinzufügen</button>
+      <button class="btn" id="modalWartungMaterialCancel">Abbrechen</button>
+    </div>
+  </div>
+</div>
+<!-- ===== /Modal: Wartung – Material / Ersatzteil hinzufügen ===== -->
+
 <!-- ===== Modal: Bestellung – Position hinzufügen ===== -->
 <div class="modal-overlay" id="modalBestellungPosition" role="dialog" aria-modal="true" aria-labelledby="modalBestellungPositionTitle">
   <div class="modal">

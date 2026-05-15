@@ -80,6 +80,13 @@ document.querySelectorAll('.segmented').forEach(group => {
 
 const _i = p => `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
 
+const _ihSidebar = active => [
+  { label: 'Neue Wartung',      icon: _i('<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>'),                                                                                                                           ...(active === 'wartung'   ? { active: true } : { page: 'sites/Instandhaltung.html' }) },
+  { label: 'Wartungsdatenbank', icon: _i('<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>'),                                                        ...(active === 'datenbank' ? { active: true } : { page: 'sites/Wartungsdatenbank.html' }) },
+  { label: 'Geräteübersicht',   icon: _i('<rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/>'), ...(active === 'geraete'   ? { active: true } : { page: 'sites/Geraeteuebersicht.html' }) },
+  { label: 'Wartungshistorie',  icon: _i('<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>'),                                                                                                                                                                                                                                   ...(active === 'historie'  ? { active: true } : { page: 'sites/Wartungshistorie.html' }) },
+];
+
 const _bvSidebar = active => [
   { label: 'Neue Bestellung',      icon: _i('<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>'),                                                                                                         ...(active === 'bestellung'     ? { active: true } : { page: 'sites/Bestellung.html' }) },
   { label: 'Bestelldatenbank',     icon: _i('<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>'), ...(active === 'datenbank'      ? { active: true } : { page: 'sites/Bestelldatenbank.html' }) },
@@ -154,17 +161,10 @@ const sidebarConfig = {
   'sites/Bestelldatenbank.html':  { sections: [{ label: 'Bestellverwaltung', items: _bvSidebar('datenbank')      }] },
   'sites/Lieferanten.html':       { sections: [{ label: 'Bestellverwaltung', items: _bvSidebar('lieferanten')    }] },
   'sites/Wareneingaenge.html':    { sections: [{ label: 'Bestellverwaltung', items: _bvSidebar('wareneingaenge') }] },
-  'sites/Instandhaltung.html': {
-    sections: [{
-      label: 'Instandhaltung',
-      items: [
-        { label: 'Neue Wartung',       icon: _i('<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>'), active: true },
-        { label: 'Wartungsdatenbank',  icon: _i('<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>') },
-        { label: 'Geräteübersicht',    icon: _i('<rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/>') },
-        { label: 'Wartungshistorie',   icon: _i('<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>') },
-      ]
-    }]
-  }
+  'sites/Instandhaltung.html':    { sections: [{ label: 'Instandhaltung', items: _ihSidebar('wartung')   }] },
+  'sites/Wartungsdatenbank.html': { sections: [{ label: 'Instandhaltung', items: _ihSidebar('datenbank') }] },
+  'sites/Geraeteuebersicht.html': { sections: [{ label: 'Instandhaltung', items: _ihSidebar('geraete')   }] },
+  'sites/Wartungshistorie.html':  { sections: [{ label: 'Instandhaltung', items: _ihSidebar('historie')  }] }
 };
 
 function renderSidebar(src) {
@@ -540,6 +540,104 @@ document.querySelectorAll('.chip-x').forEach(x => {
   });
 
   document.getElementById('modalNeuerPruefberichtSave')?.addEventListener('click', () => {
+    closeModal();
+    resetModal();
+  });
+
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) { closeModal(); resetModal(); }
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && overlay.classList.contains('open')) { closeModal(); resetModal(); }
+  });
+})();
+
+/* ==========================================================================
+   Modal: Neues Gerät (Instandhaltung – Geräteübersicht)
+   ========================================================================== */
+
+(function initModalNeuesGeraet() {
+  const overlay = document.getElementById('modalNeuesGeraet');
+  if (!overlay) return;
+
+  function openModal() {
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    overlay.querySelector('input, select, textarea')?.focus();
+  }
+
+  function closeModal() {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function resetModal() {
+    overlay.querySelectorAll('input, textarea').forEach(el => (el.value = ''));
+    overlay.querySelectorAll('select').forEach(el => (el.selectedIndex = 0));
+  }
+
+  document.addEventListener('click', e => {
+    if (e.target.closest('[data-action="neues-geraet"]')) openModal();
+  });
+
+  document.getElementById('modalNeuesGeraetClose')?.addEventListener('click', closeModal);
+
+  document.getElementById('modalNeuesGeraetCancel')?.addEventListener('click', () => {
+    closeModal();
+    resetModal();
+  });
+
+  document.getElementById('modalNeuesGeraetSave')?.addEventListener('click', () => {
+    closeModal();
+    resetModal();
+  });
+
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) { closeModal(); resetModal(); }
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && overlay.classList.contains('open')) { closeModal(); resetModal(); }
+  });
+})();
+
+/* ==========================================================================
+   Modal: Wartung – Material / Ersatzteil hinzufügen
+   ========================================================================== */
+
+(function initModalWartungMaterial() {
+  const overlay = document.getElementById('modalWartungMaterial');
+  if (!overlay) return;
+
+  function openModal() {
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    overlay.querySelector('input, select, textarea')?.focus();
+  }
+
+  function closeModal() {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function resetModal() {
+    overlay.querySelectorAll('input, textarea').forEach(el => (el.value = ''));
+    overlay.querySelectorAll('select').forEach(el => (el.selectedIndex = 0));
+  }
+
+  document.addEventListener('click', e => {
+    if (e.target.closest('[data-action="wartung-material"]')) openModal();
+  });
+
+  document.getElementById('modalWartungMaterialClose')?.addEventListener('click', closeModal);
+
+  document.getElementById('modalWartungMaterialCancel')?.addEventListener('click', () => {
+    closeModal();
+    resetModal();
+  });
+
+  document.getElementById('modalWartungMaterialSave')?.addEventListener('click', () => {
     closeModal();
     resetModal();
   });

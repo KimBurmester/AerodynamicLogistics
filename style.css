@@ -460,12 +460,13 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
   color: var(--text-secondary);
 }
 
-.badge-info    { background: var(--info-bg);    color: var(--info-text); }
-.badge-success { background: var(--success-bg); color: var(--success-text); }
-.badge-warning { background: var(--warning-bg); color: var(--warning-text); }
-.badge-danger  { background: var(--danger-bg);  color: var(--danger-text); }
-.badge-purple  { background: var(--purple-bg);  color: var(--purple-text); }
-.badge-pink    { background: var(--pink-bg);    color: var(--pink-text); }
+.badge-info      { background: var(--info-bg);    color: var(--info-text); }
+.badge-success   { background: var(--success-bg); color: var(--success-text); }
+.badge-warning   { background: var(--warning-bg); color: var(--warning-text); }
+.badge-danger    { background: var(--danger-bg);  color: var(--danger-text); }
+.badge-purple    { background: var(--purple-bg);  color: var(--purple-text); }
+.badge-pink      { background: var(--pink-bg);    color: var(--pink-text); }
+.badge-secondary { background: var(--bg-tertiary); color: var(--text-secondary); }
 
 .badge .dot {
   width: 6px;

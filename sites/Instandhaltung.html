@@ -3,70 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AirLog – Instandhaltung</title>
+    <title>Aero Dynamic Logistic – Neue Wartung</title>
     <link rel="icon" type="image/png" sizes="32x32" href="../logistikapp.png">
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
 <main>
-    <section class="container">
-        <h2 class="section-title">Instandhaltung</h2>
-        <div class="grid-3">
-            <div class="field">
-                <label>Artikelbezeichnung</label>
-                <input type="text" id="artikelbezeichnung" placeholder="z. B. Hydraulikschlauch" />
-            </div>
-            <div class="field">
-                <label>Artikelnummer</label>
-                <input type="text" id="artikelnummer" placeholder="z. B. 239324875" />
-            </div>
-            <div class="field">
-                <label>SN-Nummer</label>
-                <input type="text" id="seriennummer" placeholder="z. B. 239324875" />
-            </div>
-            <div class="field">
-                <label>Maschinennummer</label>
-                <input type="text" id="maschinennummer" placeholder="z. B. 239324875" />
-            </div>
-            <div class="field">
-                <label>Warengruppe</label>
-                <select>
-                    <option>Hydraulik</option>
-                    <option>Elektronik</option>
-                    <option>Mechanik</option>
-                    <option>Verbrauchsmaterial</option>
-                </select>
-            </div>
-            <div class="field">
-                <label>Einheit</label>
-                <select>
-                    <option>Stück</option>
-                    <option>Liter</option>
-                    <option>Meter</option>
-                    <option>Kilogramm</option>
-                </select>
-            </div>
-            <div class="field">
-                <label>Mindestbestand</label>
-                <input type="text" id="Mindestbestand" placeholder="0" />
-            </div>
-            <div class="field">
-                <label>Lagerort</label>
-                <input type="text" id="Lagerort" placeholder="z. B. Halle A / Regal 3" />
-            </div>
+<section class="container">
+
+    <div class="page-header">
+        <h2 class="section-title">Neue Wartung</h2>
+        <button class="btn btn-sm">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Vorlage laden
+        </button>
+    </div>
+
+    <!-- Auftragskopf -->
+    <p class="form-group-label">Auftragskopf</p>
+    <div class="grid-4">
+        <div class="field">
+            <label>Auftragsnummer</label>
+            <input type="text" id="ih-auftragsnr" placeholder="z. B. IH-2026-0009" />
         </div>
-        <div class="grid-3">
-            <div class="field">
-                <label>Beschreibung</label>
-                <textarea rows="3" id="beschreibung" placeholder="Optionale Beschreibung..."></textarea>
-            </div>
+        <div class="field">
+            <label>Wartungsart</label>
+            <select id="ih-wartungsart">
+                <option value=""></option>
+                <option>Inspektion</option>
+                <option>Wartung (präventiv)</option>
+                <option>Reparatur (korrektiv)</option>
+                <option>Instandsetzung (Major)</option>
+                <option>Kalibrierung</option>
+                <option>Prüfung (gesetzlich)</option>
+            </select>
         </div>
-        <div class="form-actions">
-            <button class="btn btn-primary">Speichern</button>
-            <button class="btn">Zurücksetzen</button>
+        <div class="field">
+            <label>Priorität</label>
+            <select id="ih-prioritaet">
+                <option value=""></option>
+                <option>Niedrig</option>
+                <option>Normal</option>
+                <option>Hoch</option>
+                <option>Dringend</option>
+                <option>Notfall</option>
+            </select>
         </div>
-    </section>
+        <div class="field">
+            <label>Status</label>
+            <select id="ih-status">
+                <option value=""></option>
+                <option>Geplant</option>
+                <option>Offen</option>
+                <option>In Arbeit</option>
+                <option>Abgeschlossen</option>
+                <option>Abgebrochen</option>
+            </select>
+        </div>
+    </div>
+    <div class="grid-4">
+        <div class="field">
+            <label>Geplantes Datum</label>
+            <input type="date" id="ih-datum" />
+        </div>
+        <div class="field">
+            <label>Geschätzte Dauer (h)</label>
+            <input type="number" id="ih-dauer" placeholder="0" min="0" step="0.5" />
+        </div>
+        <div class="field">
+            <label>Techniker / Verantwortlicher</label>
+            <input type="text" id="ih-techniker" placeholder="z. B. T. Weber" />
+        </div>
+        <div class="field">
+            <label>Kostenstelle</label>
+            <input type="text" id="ih-kostenstelle" placeholder="z. B. KST-5100" />
+        </div>
+    </div>
+
+    <!-- Gerät / Anlage -->
+    <p class="form-group-label">Gerät / Anlage</p>
+    <div class="grid-4">
+        <div class="field">
+            <label>Gerätekategorie</label>
+            <select id="ih-geraetekategorie">
+                <option value=""></option>
+                <option>Produktionsmaschinen</option>
+                <option>Fördertechnik</option>
+                <option>Flurförderfahrzeuge</option>
+                <option>Fahrzeuge</option>
+                <option>Halleninfrastruktur</option>
+                <option>Elektrotechnik</option>
+                <option>Druckluft &amp; Hydraulik</option>
+                <option>Prüfmittel</option>
+            </select>
+        </div>
+        <div class="field">
+            <label>Gerät / Anlage</label>
+            <select id="ih-geraet">
+                <option value=""></option>
+                <optgroup label="Produktionsmaschinen">
+                    <option value="GRT-0003">GRT-0003 – CNC-Fräsmaschine VF-4 (Halle 3)</option>
+                    <option value="GRT-0009">GRT-0009 – Schweißroboter SR-6 (Halle 2)</option>
+                </optgroup>
+                <optgroup label="Fördertechnik">
+                    <option value="GRT-0001">GRT-0001 – Hallenkran HK-500 (Halle 1)</option>
+                    <option value="GRT-0008">GRT-0008 – Brückenkran BK-800 (Halle 3)</option>
+                </optgroup>
+                <optgroup label="Flurförderfahrzeuge">
+                    <option value="GRT-0002">GRT-0002 – Elektrostapler ES-30 (Halle 2)</option>
+                    <option value="GRT-0007">GRT-0007 – Gabelstapler GS-25 (Außengelände)</option>
+                </optgroup>
+                <optgroup label="Halleninfrastruktur">
+                    <option value="GRT-0004">GRT-0004 – Rolltor Nord (Halle 1)</option>
+                    <option value="GRT-0010">GRT-0010 – Schiebetor Ost (Halle 2)</option>
+                    <option value="GRT-0011">GRT-0011 – Lüftungsanlage L1 (Halle 1)</option>
+                    <option value="GRT-0012">GRT-0012 – Sektionaltor West (Halle 3)</option>
+                </optgroup>
+                <optgroup label="Elektrotechnik">
+                    <option value="GRT-0005">GRT-0005 – Stromverteiler HV-1A (Halle 1)</option>
+                    <option value="GRT-0013">GRT-0013 – Schaltschrank SK-2B (Halle 2)</option>
+                    <option value="GRT-0014">GRT-0014 – USV-Anlage UPS-3 (Serverraum)</option>
+                </optgroup>
+                <optgroup label="Druckluft &amp; Hydraulik">
+                    <option value="GRT-0006">GRT-0006 – Kompressor KA-45 (Halle 2)</option>
+                    <option value="GRT-0015">GRT-0015 – Hydraulikaggregat HA-12 (Halle 3)</option>
+                </optgroup>
+                <optgroup label="Prüfmittel">
+                    <option value="GRT-0016">GRT-0016 – Messarm FARO Edge (Halle 3)</option>
+                </optgroup>
+            </select>
+        </div>
+        <div class="field">
+            <label>Halle / Bereich</label>
+            <select id="ih-halle">
+                <option value=""></option>
+                <option>Halle 1</option>
+                <option>Halle 2</option>
+                <option>Halle 3</option>
+                <option>Außengelände</option>
+                <option>Werkstatt</option>
+                <option>Bürogebäude</option>
+                <option>Serverraum</option>
+            </select>
+        </div>
+        <div class="field">
+            <label>Standort / Bereich</label>
+            <input type="text" id="ih-standort" placeholder="z. B. Linie A / Achse 3" />
+        </div>
+    </div>
+    <div class="grid-4">
+        <div class="field">
+            <label>Gerätenummer</label>
+            <input type="text" id="ih-geraetennr" placeholder="z. B. GRT-0003" />
+        </div>
+        <div class="field">
+            <label>Seriennummer</label>
+            <input type="text" id="ih-seriennr" placeholder="z. B. SN-VF4-2019-0042" />
+        </div>
+        <div class="field">
+            <label>Hersteller</label>
+            <input type="text" id="ih-hersteller" placeholder="z. B. Haas Automation" />
+        </div>
+        <div class="field">
+            <label>Letzter Service</label>
+            <input type="date" id="ih-letzter-service" />
+        </div>
+    </div>
+
+    <!-- Tätigkeitsbeschreibung -->
+    <p class="form-group-label">Tätigkeitsbeschreibung</p>
+    <div class="field">
+        <textarea id="ih-beschreibung" rows="4" placeholder="Beschreibung der durchzuführenden Arbeiten, Fehlerursache, beobachtete Symptome …"></textarea>
+    </div>
+
+    <!-- Ersatzteile / Materialien -->
+    <div class="page-header">
+        <p class="form-group-label">Ersatzteile / Materialien</p>
+        <button class="btn btn-sm" data-action="wartung-material">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Position hinzufügen
+        </button>
+    </div>
+
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Pos.</th>
+                    <th>Artikelnummer</th>
+                    <th>Bezeichnung</th>
+                    <th>Menge</th>
+                    <th>Einheit</th>
+                    <th>Lagerort</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="td-mono">010</td>
+                    <td class="td-mono">847362918</td>
+                    <td>O-Ring 50×3 NBR</td>
+                    <td>4</td>
+                    <td>Stück</td>
+                    <td>Halle 1 / Regal A2</td>
+                    <td><button class="btn btn-sm btn-ghost"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="form-actions">
+        <button class="btn btn-primary">Speichern</button>
+        <button class="btn">Zurücksetzen</button>
+    </div>
+
+</section>
 </main>
 </body>
-<script src="script.js"></script>
 </html>
