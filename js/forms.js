@@ -633,6 +633,22 @@
   const PREV_SVG = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>`;
   const NEXT_SVG = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`;
 
+  function updateArtikelKpis(all, root) {
+    const gesamt      = all.length;
+    const aktiv       = all.filter(r => (r.status || 'Aktiv') === 'Aktiv').length;
+    const gesperrt    = all.filter(r => r.status === 'Gesperrt').length;
+    const unterbestand= all.filter(r => {
+      const b = parseFloat(r.bestand);
+      const m = parseFloat(r.mindestbestand);
+      return !isNaN(b) && !isNaN(m) && m > 0 && b < m;
+    }).length;
+    const set = (id, val) => { const el = root?.querySelector('#' + id); if (el) el.textContent = val; };
+    set('kpi-gesamt',      gesamt.toLocaleString('de-DE'));
+    set('kpi-aktiv',       aktiv.toLocaleString('de-DE'));
+    set('kpi-gesperrt',    gesperrt.toLocaleString('de-DE'));
+    set('kpi-unterbestand',unterbestand.toLocaleString('de-DE'));
+  }
+
   function renderArtikeldatenbank(tbody, page) {
     page = page || 1;
     const all        = ADLStore.artikel.getAll();
@@ -657,6 +673,7 @@
       : `<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--text-tertiary)">Keine Artikel gespeichert</td></tr>`;
 
     const root   = tbody.closest('.container') || tbody.closest('section');
+    updateArtikelKpis(all, root);
     const infoEl = root?.querySelector('.pagination-info');
     const btnsEl = root?.querySelector('.pagination-buttons');
 
