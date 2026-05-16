@@ -140,8 +140,8 @@
   dbStyle.textContent = `
     .db-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px}
     .db-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:16px}
-    @media(max-width:960px){.db-grid-3{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:640px){.db-grid-3,.db-grid-2{grid-template-columns:1fr}}
+    @container (max-width:1499px){.db-grid-3{grid-template-columns:repeat(2,1fr)}}
+    @container (max-width:800px){.db-grid-3,.db-grid-2{grid-template-columns:1fr}}
     .db-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
     .db-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
     .db-card-head>span{font-size:12px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px}
