@@ -629,21 +629,80 @@
       </tr>`).join('');
   }
 
-  function renderArtikeldatenbank(tbody) {
-    const rows = ADLStore.artikel.getAll();
-    if (!rows.length) return;
-    tbody.innerHTML = rows.map(r => `
-      <tr data-artikel-id="${escHtml(r.id)}" style="cursor:pointer">
-        <td class="td-mono">${escHtml(r.artikelnummer || r.nr || '—')}</td>
-        <td>${escHtml(r.bezeichnung || '—')}</td>
-        <td>${escHtml(r.warengruppe || '—')}</td>
-        <td>${escHtml(r.einheit || '—')}</td>
-        <td>${escHtml(String(r.bestand !== '' ? r.bestand : '—'))}</td>
-        <td>${escHtml(String(r.mindestbestand !== '' ? r.mindestbestand : '—'))}</td>
-        <td>${escHtml(r.lagerort || '—')}</td>
-        <td>${badge(r.status || 'Aktiv')}</td>
-        <td><button class="btn btn-sm btn-ghost" data-navigate="sites/Artikel.html" data-edit-id="${escHtml(r.id)}">${EDIT_SVG}</button></td>
-      </tr>`).join('');
+  const ARTIKEL_PER_PAGE = 8;
+  const PREV_SVG = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>`;
+  const NEXT_SVG = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`;
+
+  function renderArtikeldatenbank(tbody, page) {
+    page = page || 1;
+    const all        = ADLStore.artikel.getAll();
+    const total      = all.length;
+    const totalPages = Math.max(1, Math.ceil(total / ARTIKEL_PER_PAGE));
+    page             = Math.min(Math.max(1, page), totalPages);
+    const slice      = all.slice((page - 1) * ARTIKEL_PER_PAGE, page * ARTIKEL_PER_PAGE);
+
+    tbody.innerHTML = slice.length
+      ? slice.map(r => `
+          <tr data-artikel-id="${escHtml(r.id)}" style="cursor:pointer">
+            <td class="td-mono">${escHtml(r.artikelnummer || r.nr || '—')}</td>
+            <td>${escHtml(r.bezeichnung || '—')}</td>
+            <td>${escHtml(r.warengruppe || '—')}</td>
+            <td>${escHtml(r.einheit || '—')}</td>
+            <td>${escHtml(String(r.bestand !== '' ? r.bestand : '—'))}</td>
+            <td>${escHtml(String(r.mindestbestand !== '' ? r.mindestbestand : '—'))}</td>
+            <td>${escHtml(r.lagerort || '—')}</td>
+            <td>${badge(r.status || 'Aktiv')}</td>
+            <td><button class="btn btn-sm btn-ghost" data-navigate="sites/Artikel.html" data-edit-id="${escHtml(r.id)}">${EDIT_SVG}</button></td>
+          </tr>`).join('')
+      : `<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--text-tertiary)">Keine Artikel gespeichert</td></tr>`;
+
+    const root   = tbody.closest('.container') || tbody.closest('section');
+    const infoEl = root?.querySelector('.pagination-info');
+    const btnsEl = root?.querySelector('.pagination-buttons');
+
+    if (infoEl) {
+      if (total === 0) {
+        infoEl.textContent = 'Keine Artikel';
+      } else {
+        const from = (page - 1) * ARTIKEL_PER_PAGE + 1;
+        const to   = Math.min(page * ARTIKEL_PER_PAGE, total);
+        infoEl.textContent = `Zeigt ${from}–${to} von ${total} ${total === 1 ? 'Artikel' : 'Artikeln'}`;
+      }
+    }
+
+    if (btnsEl) {
+      // Seitenbuttons berechnen: immer erste + letzte, aktuelle ±1, Rest mit Ellipsis
+      let pageNums;
+      if (totalPages <= 7) {
+        pageNums = Array.from({ length: totalPages }, (_, i) => i + 1);
+      } else {
+        const set = new Set(
+          [1, 2, page - 1, page, page + 1, totalPages - 1, totalPages]
+            .filter(p => p >= 1 && p <= totalPages)
+        );
+        pageNums = [...set].sort((a, b) => a - b);
+      }
+
+      let html = `<button class="btn btn-sm" data-pg-prev ${page === 1 ? 'disabled' : ''}>${PREV_SVG}</button>`;
+      let prev = null;
+      for (const p of pageNums) {
+        if (prev !== null && p - prev > 1) html += `<span class="pagination-ellipsis">…</span>`;
+        html += `<button class="btn btn-sm${p === page ? ' btn-primary' : ''}" data-pg="${p}">${p}</button>`;
+        prev = p;
+      }
+      html += `<button class="btn btn-sm" data-pg-next ${page === totalPages ? 'disabled' : ''}>${NEXT_SVG}</button>`;
+
+      btnsEl.innerHTML = html;
+      btnsEl.querySelectorAll('[data-pg]').forEach(btn =>
+        btn.addEventListener('click', () => renderArtikeldatenbank(tbody, +btn.dataset.pg))
+      );
+      btnsEl.querySelector('[data-pg-prev]')?.addEventListener('click', () =>
+        renderArtikeldatenbank(tbody, page - 1)
+      );
+      btnsEl.querySelector('[data-pg-next]')?.addEventListener('click', () =>
+        renderArtikeldatenbank(tbody, page + 1)
+      );
+    }
   }
 
   function renderArtikelbewegung(tbody) {
@@ -717,57 +776,61 @@
     }
 
     function buildDetailHtml(a) {
-      const row = (label, value) => {
-        const display = (value != null && value !== '')
-          ? `<span style="font-size:13px;color:var(--text-primary)">${escHtml(String(value))}</span>`
-          : `<span style="font-size:13px;color:var(--text-tertiary)">—</span>`;
-        return `<div class="field"><label>${escHtml(label)}</label>${display}</div>`;
-      };
-      return `
-        <p class="form-group-label">Stammdaten</p>
-        <div class="grid-4">
-          ${row('Artikelbezeichnung', a.bezeichnung)}${row('Artikelnummer', a.artikelnummer)}
-          ${row('Warengruppe', a.warengruppe)}${row('Artikelstatus', a.status)}
-        </div>
-        <div class="grid-4">
-          ${row('Einheit', a.einheit)}${row('Chargennummer', a.charge)}
-          ${row('Seriennummer (SN)', a.seriennr)}${row('Maschinennummer (MSN)', a.maschinennr)}
-        </div>
-        <p class="form-group-label">Lagerbestand</p>
-        <div class="grid-4">
-          ${row('Aktueller Bestand', a.bestand)}${row('Mindestbestand', a.mindestbestand)}
-          ${row('Meldebestand', a.meldebestand)}${row('Lagerort', a.lagerort)}
-        </div>
-        <p class="form-group-label">Abmessungen &amp; Verpackung</p>
-        <div class="grid-4">
-          ${row('Länge (cm)', a.laenge)}${row('Breite (cm)', a.breite)}
-          ${row('Höhe (cm)', a.hoehe)}${row('Gewicht (kg)', a.gewicht)}
-        </div>
-        <div class="grid-2">
-          ${row('Verpackungseinheit', a.verpackungseinheit)}${row('Menge pro Einheit', a.mengeProEinheit)}
-        </div>
-        <p class="form-group-label">Einkauf</p>
-        <div class="grid-3">
-          ${row('Lieferant', a.lieferant)}${row('Einkaufspreis (€)', a.einkaufspreis)}
-          ${row('Mindestbestellmenge', a.mindestbestellmenge)}
-        </div>
-        <p class="form-group-label">Verkauf</p>
-        <div class="grid-3">
-          ${row('Verkaufspreis (€)', a.verkaufspreis)}${row('Steuersatz', a.steuersatz)}
-          ${row('Zolltarifnummer', a.zolltarifnummer)}
-        </div>
-        <p class="form-group-label">Versand &amp; Klassifikation</p>
-        <div class="grid-3">
-          ${row('Gefahrgut', a.gefahrgut)}${row('Herkunftsland', a.herkunftsland)}
-          ${row('Barcode (EAN)', a.barcode)}
-        </div>
-        ${a.beschreibung ? `<p class="form-group-label">Beschreibung</p>
-        <div class="field"><span style="font-size:13px;color:var(--text-primary);white-space:pre-wrap">${escHtml(a.beschreibung)}</span></div>` : ''}
-        <p class="form-group-label">Metadaten</p>
-        <div class="grid-3">
-          ${row('Interne Nr.', a.nr)}${row('Erstellt am', fmtDate(a.erstelltAm))}
-          ${row('Geändert am', fmtDate(a.geaendertAm))}
-        </div>`;
+      const LBL = 'width:22%;padding:6px 14px 6px 0;font-size:11.5px;font-weight:600;color:var(--text-secondary);vertical-align:top;white-space:nowrap';
+      const VAL = 'width:28%;padding:6px 20px 6px 0;font-size:13px;color:var(--text-primary);vertical-align:top';
+      const v   = x => (x != null && x !== '') ? escHtml(String(x)) : `<span style="color:var(--text-tertiary)">—</span>`;
+
+      function tbl(pairs) {
+        let rows = '';
+        for (let i = 0; i < pairs.length; i += 2) {
+          const [l1, v1] = pairs[i];
+          const [l2, v2] = pairs[i + 1] || [null, null];
+          rows += `<tr>
+            <td style="${LBL}">${escHtml(l1)}</td><td style="${VAL}">${v(v1)}</td>
+            ${l2 != null ? `<td style="${LBL}">${escHtml(l2)}</td><td style="${VAL}">${v(v2)}</td>` : '<td colspan="2"></td>'}
+          </tr>`;
+        }
+        return `<table style="width:100%;border-collapse:collapse;margin-bottom:6px"><tbody>${rows}</tbody></table>`;
+      }
+
+      const sec = (title, pairs) => `<p class="form-group-label">${title}</p>${tbl(pairs)}`;
+
+      return (
+        sec('Stammdaten', [
+          ['Artikelbezeichnung', a.bezeichnung], ['Artikelnummer',       a.artikelnummer],
+          ['Warengruppe',        a.warengruppe],  ['Artikelstatus',       a.status],
+          ['Einheit',            a.einheit],       ['Chargennummer',       a.charge],
+          ['Seriennummer (SN)',  a.seriennr],      ['Maschinennummer (MSN)', a.maschinennr],
+        ]) +
+        sec('Lagerbestand', [
+          ['Aktueller Bestand', a.bestand],       ['Mindestbestand', a.mindestbestand],
+          ['Meldebestand',      a.meldebestand],  ['Lagerort',       a.lagerort],
+        ]) +
+        sec('Abmessungen &amp; Verpackung', [
+          ['Länge (cm)',         a.laenge],        ['Breite (cm)',         a.breite],
+          ['Höhe (cm)',          a.hoehe],         ['Gewicht (kg)',        a.gewicht],
+          ['Verpackungseinheit', a.verpackungseinheit], ['Menge pro Einheit', a.mengeProEinheit],
+        ]) +
+        sec('Einkauf', [
+          ['Lieferant',          a.lieferant],     ['Einkaufspreis (€)',   a.einkaufspreis],
+          ['Mindestbestellmenge',a.mindestbestellmenge],
+        ]) +
+        sec('Verkauf', [
+          ['Verkaufspreis (€)',  a.verkaufspreis], ['Steuersatz',          a.steuersatz],
+          ['Zolltarifnummer',   a.zolltarifnummer],
+        ]) +
+        sec('Versand &amp; Klassifikation', [
+          ['Gefahrgut',         a.gefahrgut],     ['Herkunftsland',       a.herkunftsland],
+          ['Barcode (EAN)',     a.barcode],
+        ]) +
+        (a.beschreibung
+          ? `<p class="form-group-label">Beschreibung</p><p style="font-size:13px;color:var(--text-primary);margin:0 0 16px;white-space:pre-wrap">${escHtml(a.beschreibung)}</p>`
+          : '') +
+        sec('Metadaten', [
+          ['Interne Nr.', a.nr], ['Erstellt am', fmtDate(a.erstelltAm)],
+          ['Geändert am', fmtDate(a.geaendertAm)],
+        ])
+      );
     }
 
     function openDetail(id) {
