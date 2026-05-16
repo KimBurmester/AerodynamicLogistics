@@ -10,9 +10,34 @@
 <body>
 <main>
 <section class="container">
-    <h2 class="section-title">Lager &amp; Standorte</h2>
 
-    <!-- Lager anlegen -->
+    <div class="page-header">
+        <h2 class="section-title">Lager &amp; Standorte</h2>
+    </div>
+
+    <!-- KPIs -->
+    <div class="grid-4 kpi-row">
+        <div class="metric-card">
+            <div class="metric-label">Lager gesamt</div>
+            <div class="metric-value" id="kpi-lager">—</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-label">Hallen</div>
+            <div class="metric-value metric-value-info" id="kpi-hallen">—</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-label">Lagerplätze</div>
+            <div class="metric-value" id="kpi-lagerplaetze">—</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-label">Freie Plätze</div>
+            <div class="metric-value metric-value-success" id="kpi-frei">—</div>
+        </div>
+    </div>
+
+    <!-- ====================================================
+         LAGER
+         ==================================================== -->
     <p class="form-group-label">Lager anlegen</p>
     <div class="grid-3">
         <div class="field">
@@ -20,8 +45,8 @@
             <input type="text" id="lagerBezeichnung" placeholder="z. B. Hauptlager Nord" />
         </div>
         <div class="field">
-            <label>Lager-ID</label>
-            <input type="text" id="lagerId" placeholder="z. B. LGR-001" />
+            <label>Lager-Nr.</label>
+            <input type="text" id="lagerId" placeholder="z. B. LGR-004" />
         </div>
         <div class="field">
             <label>Lagertyp</label>
@@ -55,28 +80,45 @@
         </div>
     </div>
     <div class="form-section-actions">
-        <button class="btn btn-primary">Lager speichern</button>
-        <button class="btn">Zurücksetzen</button>
+        <button class="btn btn-primary" data-lager-save="lager">Lager speichern</button>
+        <button class="btn" data-lager-reset="lager">Zurücksetzen</button>
     </div>
 
-    <!-- Halle anlegen -->
+    <p class="form-group-label">Lager Übersicht</p>
+    <div class="table-wrap">
+        <table class="data-table" id="tbl-lager">
+            <thead>
+                <tr>
+                    <th>Lager-Nr.</th>
+                    <th>Bezeichnung</th>
+                    <th>Typ</th>
+                    <th>Adresse</th>
+                    <th>Fläche</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- ====================================================
+         HALLEN
+         ==================================================== -->
     <p class="form-group-label">Halle anlegen</p>
     <div class="grid-4">
         <div class="field">
             <label>Hallennummer</label>
-            <input type="text" id="hallenNummer" placeholder="z. B. H-01" />
+            <input type="text" id="hallenNummer" placeholder="z. B. H-04" />
         </div>
         <div class="field">
             <label>Hallenbezeichnung</label>
-            <input type="text" id="hallenBezeichnung" placeholder="z. B. Halle Ost" />
+            <input type="text" id="hallenBezeichnung" placeholder="z. B. Halle Süd" />
         </div>
         <div class="field">
             <label>Zugehöriges Lager</label>
             <select id="halleZuLager">
-                <option value=""></option>
-                <option>Hauptlager Nord (LGR-001)</option>
-                <option>Nebenlager West (LGR-002)</option>
-                <option>Außenlager Süd (LGR-003)</option>
+                <option value="">— bitte wählen —</option>
             </select>
         </div>
         <div class="field">
@@ -99,29 +141,42 @@
         </div>
     </div>
     <div class="form-section-actions">
-        <button class="btn btn-primary">Halle speichern</button>
-        <button class="btn">Zurücksetzen</button>
+        <button class="btn btn-primary" data-lager-save="halle">Halle speichern</button>
+        <button class="btn" data-lager-reset="halle">Zurücksetzen</button>
     </div>
 
-    <!-- Lagerplatz anlegen -->
+    <p class="form-group-label">Hallen Übersicht</p>
+    <div class="table-wrap">
+        <table class="data-table" id="tbl-hallen">
+            <thead>
+                <tr>
+                    <th>Hallennr.</th>
+                    <th>Bezeichnung</th>
+                    <th>Lager</th>
+                    <th>Fläche</th>
+                    <th>L × B × H (m)</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- ====================================================
+         LAGERPLÄTZE
+         ==================================================== -->
     <p class="form-group-label">Lagerplatz anlegen</p>
     <div class="grid-4">
         <div class="field">
             <label>Lager</label>
             <select id="platzLager">
-                <option value=""></option>
-                <option>Hauptlager Nord (LGR-001)</option>
-                <option>Nebenlager West (LGR-002)</option>
-                <option>Außenlager Süd (LGR-003)</option>
+                <option value="">— bitte wählen —</option>
             </select>
         </div>
         <div class="field">
             <label>Halle</label>
             <select id="platzHalle">
-                <option value=""></option>
-                <option>H-01 – Halle Ost</option>
-                <option>H-02 – Halle West</option>
-                <option>H-03 – Halle Nord</option>
+                <option value="">— bitte wählen —</option>
             </select>
         </div>
         <div class="field">
@@ -155,38 +210,51 @@
         </div>
         <div class="field">
             <label>Lagerplatz-ID (automatisch)</label>
-            <input type="text" id="platzId" readonly placeholder="LGR-001-H01-R03-F05-E02" />
+            <input type="text" id="platzId" readonly placeholder="LGR-001-H-01-R03-F05-E02" />
         </div>
     </div>
     <div class="form-section-actions">
-        <button class="btn btn-primary">Lagerplatz speichern</button>
-        <button class="btn">Zurücksetzen</button>
+        <button class="btn btn-primary" data-lager-save="lagerplatz">Lagerplatz speichern</button>
+        <button class="btn" data-lager-reset="lagerplatz">Zurücksetzen</button>
     </div>
 
-    <!-- Lagerplatz Generator -->
+    <p class="form-group-label">Lagerplätze Übersicht</p>
+    <div class="table-wrap">
+        <table class="data-table" id="tbl-lagerplaetze">
+            <thead>
+                <tr>
+                    <th>Lagerplatz-ID</th>
+                    <th>Lager</th>
+                    <th>Halle</th>
+                    <th>Regal</th>
+                    <th>Fach</th>
+                    <th>Ebene</th>
+                    <th>Typ</th>
+                    <th>Tragfähigkeit</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- ====================================================
+         GENERATOR
+         ==================================================== -->
     <p class="form-group-label">Lagerplatz Generator</p>
     <div class="grid-4">
         <div class="field">
             <label>Lager</label>
             <select id="genLager">
-                <option value=""></option>
-                <option>Hauptlager Nord (LGR-001)</option>
-                <option>Nebenlager West (LGR-002)</option>
-                <option>Außenlager Süd (LGR-003)</option>
+                <option value="">— bitte wählen —</option>
             </select>
         </div>
         <div class="field">
             <label>Halle</label>
             <select id="genHalle">
-                <option value=""></option>
-                <option value="H01">H-01 – Halle Ost</option>
-                <option value="H02">H-02 – Halle West</option>
-                <option value="H03">H-03 – Halle Nord</option>
+                <option value="">— bitte wählen —</option>
             </select>
-        </div>
-        <div class="field">
-            <label>Präfix</label>
-            <input type="text" id="genPraefix" placeholder="z. B. LGR-001-H01" />
         </div>
         <div class="field">
             <label>Lagerplatz-Typ</label>
@@ -198,6 +266,10 @@
                 <option>Gefahrgutlager</option>
                 <option>Kühlbereich</option>
             </select>
+        </div>
+        <div class="field">
+            <label>Tragfähigkeit (kg)</label>
+            <input type="text" id="genTragfaehigkeit" placeholder="z. B. 1500" />
         </div>
     </div>
     <div class="grid-3">

@@ -81,6 +81,9 @@
     wareneingaenge:       new Collection('wareneingaenge'),
     geraete:              new Collection('geraete'),
     wartungsauftraege:    new Collection('wartungsauftraege'),
+    lager:                new Collection('lager'),
+    hallen:               new Collection('hallen'),
+    lagerplaetze:         new Collection('lagerplaetze'),
   };
 
   /* ---- Seed-Daten (nur beim ersten Aufruf) -------------------------- */
@@ -143,6 +146,38 @@
         { nr:'WE-2026-0007', bestellnr:'BST-2026-0002', lieferant:'Parker Hannifin GmbH',   artikel:'Hydrauliköl HLP 46',           mengeGeliefert:200, einheit:'Liter',  lieferschein:'LS-PK-260005', datum:'2026-01-20', status:'In Prüfung'            },
         { nr:'WE-2026-0008', bestellnr:'BST-2026-0004', lieferant:'Festo SE & Co. KG',      artikel:'Kabelkanal 40×60 mm',          mengeGeliefert:50,  einheit:'Meter',  lieferschein:'LS-FE-260009', datum:'2026-01-22', status:'Abgeschlossen (i.O.)' },
       ].forEach(r => ADLStore.wareneingaenge.add(r));
+    }
+
+    /* Lager */
+    if (!ADLStore.lager.count()) {
+      [
+        { nr:'LGR-001', bezeichnung:'Hauptlager Nord', typ:'Hauptlager',   adresse:'Industriestr. 12, 22769 Hamburg', flaeche:2400, status:'Aktiv' },
+        { nr:'LGR-002', bezeichnung:'Nebenlager West', typ:'Nebenlager',   adresse:'Westring 5, 22769 Hamburg',       flaeche:1200, status:'Aktiv' },
+        { nr:'LGR-003', bezeichnung:'Außenlager Süd',  typ:'Außenlager',   adresse:'Südstraße 18, 21109 Hamburg',     flaeche: 800, status:'Aktiv' },
+      ].forEach(r => ADLStore.lager.add(r));
+    }
+
+    /* Hallen */
+    if (!ADLStore.hallen.count()) {
+      [
+        { nr:'H-01', bezeichnung:'Halle Ost',  lagerNr:'LGR-001', lagerBezeichnung:'Hauptlager Nord', flaeche:600, laenge:40, breite:15, hoehe:8 },
+        { nr:'H-02', bezeichnung:'Halle West', lagerNr:'LGR-001', lagerBezeichnung:'Hauptlager Nord', flaeche:600, laenge:40, breite:15, hoehe:8 },
+        { nr:'H-03', bezeichnung:'Halle Nord', lagerNr:'LGR-002', lagerBezeichnung:'Nebenlager West', flaeche:400, laenge:30, breite:13, hoehe:7 },
+      ].forEach(r => ADLStore.hallen.add(r));
+    }
+
+    /* Lagerplätze */
+    if (!ADLStore.lagerplaetze.count()) {
+      [
+        { platzId:'LGR-001-H-01-R01-F01-E01', lagerNr:'LGR-001', lagerBezeichnung:'Hauptlager Nord', halleNr:'H-01', halleBezeichnung:'Halle Ost',  regal:'R01', fach:'F01', ebene:'E01', typ:'Standard',   tragfaehigkeit:1500, status:'Frei'     },
+        { platzId:'LGR-001-H-01-R01-F02-E01', lagerNr:'LGR-001', lagerBezeichnung:'Hauptlager Nord', halleNr:'H-01', halleBezeichnung:'Halle Ost',  regal:'R01', fach:'F02', ebene:'E01', typ:'Standard',   tragfaehigkeit:1500, status:'Belegt'   },
+        { platzId:'LGR-001-H-01-R02-F01-E01', lagerNr:'LGR-001', lagerBezeichnung:'Hauptlager Nord', halleNr:'H-01', halleBezeichnung:'Halle Ost',  regal:'R02', fach:'F01', ebene:'E01', typ:'Standard',   tragfaehigkeit:1500, status:'Frei'     },
+        { platzId:'LGR-001-H-01-R02-F02-E01', lagerNr:'LGR-001', lagerBezeichnung:'Hauptlager Nord', halleNr:'H-01', halleBezeichnung:'Halle Ost',  regal:'R02', fach:'F02', ebene:'E01', typ:'Hochregal',  tragfaehigkeit:2000, status:'Belegt'   },
+        { platzId:'LGR-001-H-02-R01-F01-E01', lagerNr:'LGR-001', lagerBezeichnung:'Hauptlager Nord', halleNr:'H-02', halleBezeichnung:'Halle West', regal:'R01', fach:'F01', ebene:'E01', typ:'Standard',   tragfaehigkeit:1500, status:'Frei'     },
+        { platzId:'LGR-001-H-02-R01-F02-E01', lagerNr:'LGR-001', lagerBezeichnung:'Hauptlager Nord', halleNr:'H-02', halleBezeichnung:'Halle West', regal:'R01', fach:'F02', ebene:'E01', typ:'Sperrlager', tragfaehigkeit:1000, status:'Gesperrt' },
+        { platzId:'LGR-002-H-03-R01-F01-E01', lagerNr:'LGR-002', lagerBezeichnung:'Nebenlager West', halleNr:'H-03', halleBezeichnung:'Halle Nord', regal:'R01', fach:'F01', ebene:'E01', typ:'Standard',   tragfaehigkeit:1200, status:'Frei'     },
+        { platzId:'LGR-002-H-03-R01-F02-E01', lagerNr:'LGR-002', lagerBezeichnung:'Nebenlager West', halleNr:'H-03', halleBezeichnung:'Halle Nord', regal:'R01', fach:'F02', ebene:'E01', typ:'Bodenlager', tragfaehigkeit:5000, status:'Belegt'   },
+      ].forEach(r => ADLStore.lagerplaetze.add(r));
     }
 
     /* Wartungsaufträge */

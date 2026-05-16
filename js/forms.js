@@ -45,6 +45,7 @@
       'Abgelehnt (n.i.O.)':'danger','Defekt':'danger','Gesperrt':'danger','Dringend':'danger','Notfall':'danger','Nicht abgeschlossen':'danger','Versand':'danger','Gelöscht':'danger','Löschung':'danger',
       'Umlagerung':'purple',
       'Niedrig':'secondary',
+      'Frei':'success','Belegt':'warning','In Planung':'info','Inaktiv':'secondary',
     };
     const cls = map[status] || 'info';
     return `<span class="badge badge-${cls}"><span class="dot"></span>${escHtml(status)}</span>`;
@@ -85,7 +86,7 @@
     set('bestand',             a.bestand);
     set('mindestbestand',      a.mindestbestand);
     set('meldebestand',        a.meldebestand);
-    set('lagerort',            a.lagerort);
+    sel('lagerort',            a.lagerort);
     set('laenge',              a.laenge);
     set('breite',              a.breite);
     set('hoehe',               a.hoehe);
@@ -140,6 +141,7 @@
      ================================================================ */
 
   document.addEventListener('DOMContentLoaded', () => {
+    refreshLagerortSelects();
 
     /* -- Neuer Artikel -------------------------------------------- */
     document.getElementById('modalNeuerArtikelSave')?.addEventListener('click', () => {
@@ -837,6 +839,114 @@
      Seitenerkennung & automatisches Tabellen-Rendering
      ================================================================ */
 
+  /* ---- Lagerort-Selects befüllen ---------------------------------- */
+
+  function refreshLagerortSelects() {
+    const plaetze = ADLStore.lagerplaetze.getAll();
+    const opts = '<option value="">— bitte wählen —</option>' +
+      plaetze.map(p => `<option value="${escHtml(p.platzId)}">${escHtml(p.platzId)}</option>`).join('');
+    document.querySelectorAll('select#lagerort, select#m-lagerort').forEach(el => {
+      const cur = el.value;
+      el.innerHTML = opts;
+      if (cur) el.value = cur;
+    });
+  }
+
+  /* ---- Artikelverwaltung: nur Lagerort-Select befüllen ----------- */
+
+  function renderArtikelVerwaltung(root) {
+    const plaetze = ADLStore.lagerplaetze.getAll();
+    const opts = '<option value="">— bitte wählen —</option>' +
+      plaetze.map(p => `<option value="${escHtml(p.platzId)}">${escHtml(p.platzId)}</option>`).join('');
+    const el = root.querySelector('select#lagerort');
+    if (el) { const cur = el.value; el.innerHTML = opts; if (cur) el.value = cur; }
+  }
+
+  /* ---- Lager & Standorte ----------------------------------------- */
+
+  function renderLagerStandorte(root) {
+    const lager   = ADLStore.lager.getAll();
+    const hallen  = ADLStore.hallen.getAll();
+    const plaetze = ADLStore.lagerplaetze.getAll();
+
+    /* KPIs */
+    const frei = plaetze.filter(p => p.status === 'Frei').length;
+    const set  = (id, v) => { const el = root.querySelector('#' + id); if (el) el.textContent = v; };
+    set('kpi-lager',       lager.length.toLocaleString('de-DE'));
+    set('kpi-hallen',      hallen.length.toLocaleString('de-DE'));
+    set('kpi-lagerplaetze',plaetze.length.toLocaleString('de-DE'));
+    set('kpi-frei',        frei.toLocaleString('de-DE'));
+
+    /* Lager-Tabelle */
+    const lagerTbody = root.querySelector('#tbl-lager tbody');
+    if (lagerTbody) {
+      lagerTbody.innerHTML = lager.length
+        ? lager.map(r => `
+            <tr>
+              <td class="td-mono">${escHtml(r.nr || '—')}</td>
+              <td>${escHtml(r.bezeichnung || '—')}</td>
+              <td>${escHtml(r.typ || '—')}</td>
+              <td>${escHtml(r.adresse || '—')}</td>
+              <td>${escHtml(r.flaeche ? r.flaeche + ' m²' : '—')}</td>
+              <td>${badge(r.status || 'Aktiv')}</td>
+              <td>${deleteBtn('lager', r.id, r.bezeichnung || r.nr)}</td>
+            </tr>`).join('')
+        : `<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-tertiary)">Keine Lager gespeichert</td></tr>`;
+    }
+
+    /* Hallen-Tabelle */
+    const hallenTbody = root.querySelector('#tbl-hallen tbody');
+    if (hallenTbody) {
+      hallenTbody.innerHTML = hallen.length
+        ? hallen.map(r => `
+            <tr>
+              <td class="td-mono">${escHtml(r.nr || '—')}</td>
+              <td>${escHtml(r.bezeichnung || '—')}</td>
+              <td>${escHtml(r.lagerBezeichnung || r.lagerNr || '—')}</td>
+              <td>${escHtml(r.flaeche ? r.flaeche + ' m²' : '—')}</td>
+              <td>${escHtml([r.laenge, r.breite, r.hoehe].map(v => v || '—').join(' × '))}</td>
+              <td>${deleteBtn('hallen', r.id, r.bezeichnung || r.nr)}</td>
+            </tr>`).join('')
+        : `<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-tertiary)">Keine Hallen gespeichert</td></tr>`;
+    }
+
+    /* Lagerplätze-Tabelle */
+    const plaetzeTbody = root.querySelector('#tbl-lagerplaetze tbody');
+    if (plaetzeTbody) {
+      plaetzeTbody.innerHTML = plaetze.length
+        ? plaetze.map(r => `
+            <tr>
+              <td class="td-mono">${escHtml(r.platzId || '—')}</td>
+              <td>${escHtml(r.lagerBezeichnung || r.lagerNr || '—')}</td>
+              <td>${escHtml(r.halleNr ? r.halleNr + (r.halleBezeichnung ? ' – ' + r.halleBezeichnung : '') : '—')}</td>
+              <td>${escHtml(r.regal || '—')}</td>
+              <td>${escHtml(r.fach || '—')}</td>
+              <td>${escHtml(r.ebene || '—')}</td>
+              <td>${escHtml(r.typ || '—')}</td>
+              <td>${escHtml(r.tragfaehigkeit ? r.tragfaehigkeit + ' kg' : '—')}</td>
+              <td>${badge(r.status || 'Frei')}</td>
+              <td>${deleteBtn('lagerplaetze', r.id, r.platzId)}</td>
+            </tr>`).join('')
+        : `<tr><td colspan="10" style="text-align:center;padding:24px;color:var(--text-tertiary)">Keine Lagerplätze gespeichert</td></tr>`;
+    }
+
+    /* Lager-Selects in Formularen befüllen */
+    const lagerOpts = '<option value="">— bitte wählen —</option>' +
+      lager.map(l => `<option value="${escHtml(l.nr)}">${escHtml(l.nr)} – ${escHtml(l.bezeichnung)}</option>`).join('');
+    ['halleZuLager', 'platzLager', 'genLager'].forEach(id => {
+      const el = root.querySelector('#' + id);
+      if (el) { const cur = el.value; el.innerHTML = lagerOpts; if (cur) el.value = cur; }
+    });
+
+    /* Hallen-Selects befüllen (ungefiltert) */
+    const hallenOpts = '<option value="">— bitte wählen —</option>' +
+      hallen.map(h => `<option value="${escHtml(h.nr)}">${escHtml(h.nr)} – ${escHtml(h.bezeichnung)}</option>`).join('');
+    ['platzHalle', 'genHalle'].forEach(id => {
+      const el = root.querySelector('#' + id);
+      if (el) { const cur = el.value; el.innerHTML = hallenOpts; if (cur) el.value = cur; }
+    });
+  }
+
   const TITLE_MAP = {
     'Artikeldatenbank':     renderArtikeldatenbank,
     'Artikelbewegung':      renderArtikelbewegung,
@@ -846,12 +956,17 @@
     'Wartungsdatenbank':    renderWartungsdatenbank,
     'Geräteübersicht':      renderGeraeteuebersicht,
     'Wartungshistorie':     renderWartungshistorie,
+    'Lager & Standorte':    renderLagerStandorte,
+    'Artikelverwaltung':    renderArtikelVerwaltung,
   };
 
+  const ROOT_RENDERER_TITLES = new Set(['Lager & Standorte', 'Artikelverwaltung']);
+
   function tryRender(root) {
-    const title   = root.querySelector('.section-title')?.textContent?.trim();
+    const title    = root.querySelector('.section-title')?.textContent?.trim();
     const renderer = title ? TITLE_MAP[title] : null;
     if (!renderer) return;
+    if (ROOT_RENDERER_TITLES.has(title)) { renderer(root); return; }
     const tbody = root.querySelector('.data-table tbody');
     if (tbody) renderer(tbody);
   }
@@ -1001,6 +1116,165 @@
      Artikelbewegung: kein deleteBtn → kein Löschen möglich
      ================================================================ */
 
+  /* ================================================================
+     Lager / Halle / Lagerplatz speichern
+     ================================================================ */
+
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('[data-lager-save]');
+    if (!btn) return;
+    const mc = document.querySelector('.main-content');
+    if (!mc) return;
+    const g    = id => (mc.querySelector('#' + id)?.value ?? '').trim();
+    const gsel = id => mc.querySelector('#' + id)?.value ?? '';
+    const clr  = ids => ids.forEach(id => { const el = mc.querySelector('#' + id); if (el) el.value = ''; });
+    const type = btn.dataset.lagerSave;
+
+    if (type === 'lager') {
+      const bezeichnung = g('lagerBezeichnung');
+      if (!bezeichnung) { toast('Bitte Lagerbezeichnung angeben.', 'danger'); return; }
+      const nr = g('lagerId') || ('LGR-' + String(ADLStore.lager.count() + 1).padStart(3, '0'));
+      ADLStore.lager.add({ nr, bezeichnung, typ: gsel('lagerTyp') || 'Hauptlager', adresse: g('lagerAdresse'), flaeche: g('lagerFlaeche'), status: gsel('lagerStatus') || 'Aktiv' });
+      toast(`Lager „${bezeichnung}" gespeichert.`);
+      clr(['lagerBezeichnung', 'lagerId', 'lagerAdresse', 'lagerFlaeche']);
+
+    } else if (type === 'halle') {
+      const nr          = g('hallenNummer');
+      const bezeichnung = g('hallenBezeichnung');
+      if (!nr || !bezeichnung) { toast('Bitte Hallennummer und Bezeichnung angeben.', 'danger'); return; }
+      const lagerNr = gsel('halleZuLager');
+      const lager   = ADLStore.lager.getAll().find(l => l.nr === lagerNr);
+      ADLStore.hallen.add({ nr, bezeichnung, lagerNr, lagerBezeichnung: lager?.bezeichnung || lagerNr, flaeche: g('hallenFlaeche'), laenge: g('hallenLaenge'), breite: g('hallenBreite'), hoehe: g('hallenHoehe') });
+      toast(`Halle „${nr} – ${bezeichnung}" gespeichert.`);
+      clr(['hallenNummer', 'hallenBezeichnung', 'hallenFlaeche', 'hallenLaenge', 'hallenBreite', 'hallenHoehe']);
+
+    } else if (type === 'lagerplatz') {
+      const lagerNr = gsel('platzLager');
+      const regal   = g('platzRegal');
+      const fach    = g('platzFach');
+      if (!lagerNr || !regal || !fach) { toast('Bitte Lager, Regal und Fach angeben.', 'danger'); return; }
+      const halleNr = gsel('platzHalle');
+      const ebene   = g('platzEbene');
+      const lager   = ADLStore.lager.getAll().find(l => l.nr === lagerNr);
+      const halle   = ADLStore.hallen.getAll().find(h => h.nr === halleNr);
+      const platzId = [lagerNr, halleNr, regal, fach, ebene].filter(Boolean).join('-');
+      ADLStore.lagerplaetze.add({ platzId, lagerNr, lagerBezeichnung: lager?.bezeichnung || lagerNr, halleNr, halleBezeichnung: halle?.bezeichnung || halleNr, regal, fach, ebene, typ: gsel('platzTyp') || 'Standard', tragfaehigkeit: g('platzTragfaehigkeit'), status: 'Frei' });
+      toast(`Lagerplatz „${platzId}" gespeichert.`);
+      clr(['platzRegal', 'platzFach', 'platzEbene', 'platzTragfaehigkeit', 'platzId']);
+      refreshLagerortSelects();
+    }
+
+    tryRender(mc);
+  });
+
+  /* ================================================================
+     Lagerplatz-ID Vorschau (Auto-Berechnung)
+     ================================================================ */
+
+  document.addEventListener('input', e => {
+    if (!['platzRegal', 'platzFach', 'platzEbene'].includes(e.target.id)) return;
+    const mc = document.querySelector('.main-content');
+    if (!mc) return;
+    const g  = id => (mc.querySelector('#' + id)?.value ?? '').trim();
+    const platzId = [g('platzLager'), g('platzHalle'), g('platzRegal'), g('platzFach'), g('platzEbene')].filter(Boolean).join('-');
+    const el = mc.querySelector('#platzId');
+    if (el) el.value = platzId;
+  });
+
+  document.addEventListener('change', e => {
+    const mc = document.querySelector('.main-content');
+    if (!mc) return;
+
+    if (['platzLager', 'platzHalle'].includes(e.target.id)) {
+      const g = id => (mc.querySelector('#' + id)?.value ?? '').trim();
+      const platzId = [g('platzLager'), g('platzHalle'), g('platzRegal'), g('platzFach'), g('platzEbene')].filter(Boolean).join('-');
+      const el = mc.querySelector('#platzId');
+      if (el) el.value = platzId;
+    }
+
+    if (e.target.id === 'platzLager' || e.target.id === 'genLager') {
+      const lagerNr  = e.target.value;
+      const filtered = ADLStore.hallen.getAll().filter(h => !lagerNr || h.lagerNr === lagerNr);
+      const halleId  = e.target.id === 'platzLager' ? 'platzHalle' : 'genHalle';
+      const halleEl  = mc.querySelector('#' + halleId);
+      if (halleEl) {
+        halleEl.innerHTML = '<option value="">— bitte wählen —</option>' +
+          filtered.map(h => `<option value="${escHtml(h.nr)}">${escHtml(h.nr)} – ${escHtml(h.bezeichnung)}</option>`).join('');
+      }
+    }
+  });
+
+  /* ================================================================
+     Lagerplatz Generator
+     ================================================================ */
+
+  let _generatorData = [];
+
+  document.addEventListener('click', e => {
+    if (e.target.id === 'btnGenerieren' || e.target.closest('#btnGenerieren')) {
+      const mc = document.querySelector('.main-content');
+      if (!mc) return;
+      const g      = id => (mc.querySelector('#' + id)?.value ?? '').trim();
+      const gsel   = id => mc.querySelector('#' + id)?.value ?? '';
+      const lagerNr = gsel('genLager');
+      const halleNr = gsel('genHalle');
+      const typ     = gsel('genTyp') || 'Standard';
+      const tf      = g('genTragfaehigkeit');
+      const regale  = parseInt(g('genRegale'))  || 0;
+      const faecher = parseInt(g('genFaecher')) || 0;
+      const ebenen  = parseInt(g('genEbenen'))  || 0;
+
+      if (!lagerNr || regale <= 0 || faecher <= 0 || ebenen <= 0) {
+        toast('Bitte Lager und Regal-, Fach- sowie Ebenenanzahl angeben.', 'danger'); return;
+      }
+
+      const lager = ADLStore.lager.getAll().find(l => l.nr === lagerNr);
+      const halle = ADLStore.hallen.getAll().find(h => h.nr === halleNr);
+      _generatorData = [];
+      for (let r = 1; r <= regale; r++) {
+        for (let f = 1; f <= faecher; f++) {
+          for (let eb = 1; eb <= ebenen; eb++) {
+            const rStr = 'R' + String(r).padStart(2, '0');
+            const fStr = 'F' + String(f).padStart(2, '0');
+            const eStr = 'E' + String(eb).padStart(2, '0');
+            _generatorData.push({ platzId: [lagerNr, halleNr, rStr, fStr, eStr].filter(Boolean).join('-'), lagerNr, lagerBezeichnung: lager?.bezeichnung || lagerNr, halleNr, halleBezeichnung: halle?.bezeichnung || halleNr, regal: rStr, fach: fStr, ebene: eStr, typ, tragfaehigkeit: tf, status: 'Frei' });
+          }
+        }
+      }
+
+      const vorschau = mc.querySelector('#generatorVorschau');
+      if (vorschau) vorschau.textContent = _generatorData.map(p => p.platzId).join('\n');
+      const uBtn = mc.querySelector('#btnUebernehmen');
+      if (uBtn) uBtn.disabled = false;
+    }
+
+    if (e.target.id === 'btnUebernehmen' || e.target.closest('#btnUebernehmen')) {
+      if (!_generatorData.length) return;
+      _generatorData.forEach(p => ADLStore.lagerplaetze.add(p));
+      toast(`${_generatorData.length} Lagerplätze gespeichert.`);
+      _generatorData = [];
+      const mc = document.querySelector('.main-content');
+      if (mc) {
+        const uBtn = mc.querySelector('#btnUebernehmen');
+        if (uBtn) uBtn.disabled = true;
+        const vorschau = mc.querySelector('#generatorVorschau');
+        if (vorschau) vorschau.textContent = 'Einstellungen wählen und auf „Generieren" klicken…';
+        tryRender(mc);
+      }
+      refreshLagerortSelects();
+    }
+
+    if (e.target.id === 'btnGeneratorReset' || e.target.closest('#btnGeneratorReset')) {
+      _generatorData = [];
+      const mc = document.querySelector('.main-content');
+      if (!mc) return;
+      const vorschau = mc.querySelector('#generatorVorschau');
+      if (vorschau) vorschau.textContent = 'Einstellungen wählen und auf „Generieren" klicken…';
+      const uBtn = mc.querySelector('#btnUebernehmen');
+      if (uBtn) uBtn.disabled = true;
+    }
+  });
+
   document.addEventListener('click', e => {
     const btn = e.target.closest('[data-delete-id]');
     if (!btn) return;
@@ -1047,6 +1321,7 @@
 
     ADLStore[store]?.remove(id);
     toast(`„${label}" wurde gelöscht.`, 'danger');
+    if (store === 'lagerplaetze') refreshLagerortSelects();
     const mc = document.querySelector('.main-content');
     if (mc) tryRender(mc);
   });
