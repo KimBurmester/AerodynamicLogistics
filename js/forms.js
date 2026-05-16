@@ -426,6 +426,8 @@
         status:      'Abgeschlossen',
       });
       toast(`Artikel „${bezeichnung}" gespeichert.`);
+      mc.querySelectorAll('input, textarea').forEach(el => (el.value = ''));
+      mc.querySelectorAll('select').forEach(el => (el.selectedIndex = 0));
       return;
     }
 
