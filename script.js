@@ -340,10 +340,9 @@ document.querySelectorAll('.chip-x').forEach(x => {
     resetModal();
   });
 
+  // forms.js liest die Felder synchron – close/reset erst danach als Microtask
   document.getElementById('modalNeuerArtikelSave')?.addEventListener('click', () => {
-    // Placeholder: hier später API-Call einfügen
-    closeModal();
-    resetModal();
+    queueMicrotask(() => { closeModal(); resetModal(); });
   });
 
   // Close on backdrop click
@@ -842,17 +841,6 @@ document.addEventListener('click', e => {
   }
 });
 
-/* ==========================================================================
-    Artikel Manager
-   ========================================================================== */
-
-const speichernBtn = document.querySelector('.btn.btn-primary');
-if (speichernBtn) {
-  speichernBtn.addEventListener('click', () => {
-    const wert = document.querySelector('#artikelbezeichnung').value;
-    console.log(wert);
-  });
-}
 
 
 
