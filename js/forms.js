@@ -59,8 +59,9 @@
 
   const EDIT_SVG = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
 
-  function editBtn(page) {
-    return `<button class="btn btn-sm btn-ghost" data-navigate="${page}">${EDIT_SVG}</button>`;
+  function editBtn(page, id) {
+    const idAttr = id ? ` data-edit-id="${escHtml(String(id))}"` : '';
+    return `<button class="btn btn-sm btn-ghost" data-navigate="${escHtml(page)}"${idAttr}>${EDIT_SVG}</button>`;
   }
 
   const DELETE_SVG = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`;
@@ -421,7 +422,19 @@
 
   document.addEventListener('adl:edit-navigate', ({ detail: { editId } }) => {
     const mc = document.querySelector('.main-content');
-    if (!mc || !mc.querySelector('#artikelbezeichnung')) return;
+    if (!mc) return;
+
+    /* Produktionsauftrag (Produktion.html) */
+    if (mc.querySelector('#produktname') !== null) {
+      const r = ADLStore.produktionsauftraege.getById(editId);
+      if (!r) return;
+      mc.dataset.prdEditId = editId;
+      fillPrdForm(mc, r);
+      return;
+    }
+
+    /* Artikel (Artikel.html) */
+    if (!mc.querySelector('#artikelbezeichnung')) return;
     const artikel = ADLStore.artikel.getById(editId);
     if (!artikel) return;
     mc.dataset.artikelEditId = editId;
@@ -525,6 +538,51 @@
       }
       mc.querySelectorAll('input, textarea').forEach(el => (el.value = ''));
       mc.querySelectorAll('select').forEach(el => (el.selectedIndex = 0));
+      return;
+    }
+
+    /* Produktionsauftrag (Produktion.html) */
+    if (mc.querySelector('#produktname') !== null) {
+      const bezeichnung = val('produktname');
+      if (!bezeichnung) { toast('Bitte Produktname angeben.', 'danger'); return; }
+      const prdData = {
+        bezeichnung,
+        artikelnr:        val('artikelnummer'),
+        menge:            val('produktionsmenge') ? val('produktionsmenge') + ' Stück' : '',
+        linie:            sval('produktionslinie'),
+        start:            val('prd-start'),
+        ende:             val('prd-ende'),
+        status:           sval('prd-status') || 'Planung',
+        seriennr:         val('seriennummer'),
+        charge:           val('chargennummer'),
+        version:          val('version'),
+        bom:              val('bom'),
+        spezifikation:    val('spezifikationen'),
+        zertifizierung:   val('zertifizierung'),
+        qualitaet:        val('qualitaet'),
+        sicherheit:       val('sicherheit'),
+        maschine:         val('maschine'),
+        werkzeuge:        val('werkzeuge'),
+        schicht:          sval('schicht'),
+        ressourcenbedarf: val('ressourcenbedarf'),
+        pruefschritte:    val('pruefschritte'),
+      };
+      const editId = mc.dataset.prdEditId;
+      if (editId) {
+        ADLStore.produktionsauftraege.update(editId, prdData);
+        delete mc.dataset.prdEditId;
+        toast(`Produktionsauftrag „${bezeichnung}" aktualisiert.`);
+      } else {
+        ADLStore.produktionsauftraege.add({
+          nr: val('prd-auftragsnr') || ADLStore.produktionsauftraege.nextNr('PRD', 'nr'),
+          ...prdData,
+        });
+        toast(`Produktionsauftrag „${bezeichnung}" gespeichert.`);
+      }
+      mc.querySelectorAll('input:not([readonly]), textarea').forEach(el => { el.value = ''; });
+      mc.querySelectorAll('select').forEach(el => { el.selectedIndex = 0; });
+      const nrEl = mc.querySelector('#prd-auftragsnr');
+      if (nrEl) nrEl.value = ADLStore.produktionsauftraege.nextNr('PRD', 'nr');
       return;
     }
 
@@ -1084,20 +1142,166 @@
       : '<div class="db-empty">Keine offenen Wartungen</div>');
   }
 
+  /* ================================================================
+     Produktionsdatenbank Renderer
+     ================================================================ */
+
+  function fillPrdForm(mc, r) {
+    const set = (id, v) => { const el = mc.querySelector('#' + id); if (el) el.value = v ?? ''; };
+    const sel = (id, v) => {
+      const el = mc.querySelector('#' + id);
+      if (!el || v == null) return;
+      const opt = [...el.options].find(o => o.text === v || o.value === v);
+      if (opt) el.value = opt.value;
+    };
+    set('prd-auftragsnr',   r.nr);
+    set('produktname',      r.bezeichnung);
+    set('artikelnummer',    r.artikelnr);
+    set('produktionsmenge', String(r.menge || '').replace(/\s*Stück/i, '').trim());
+    sel('produktionslinie', r.linie);
+    set('prd-start',        r.start);
+    set('prd-ende',         r.ende);
+    sel('prd-status',       r.status);
+    set('seriennummer',     r.seriennr);
+    set('chargennummer',    r.charge);
+    set('version',          r.version);
+    set('bom',              r.bom);
+    set('spezifikationen',  r.spezifikation);
+    set('zertifizierung',   r.zertifizierung);
+    set('qualitaet',        r.qualitaet);
+    set('sicherheit',       r.sicherheit);
+    set('maschine',         r.maschine);
+    set('werkzeuge',        r.werkzeuge);
+    sel('schicht',          r.schicht);
+    set('ressourcenbedarf', r.ressourcenbedarf);
+    set('pruefschritte',    r.pruefschritte);
+  }
+
+  function renderProduktionForm(root) {
+    const nrEl = root.querySelector('#prd-auftragsnr');
+    if (nrEl && !nrEl.value) {
+      nrEl.value = ADLStore.produktionsauftraege.nextNr('PRD', 'nr');
+    }
+    const resetBtn = root.querySelector('#prd-reset');
+    if (resetBtn && !resetBtn._prdBound) {
+      resetBtn._prdBound = true;
+      resetBtn.addEventListener('click', () => {
+        root.querySelectorAll('input:not([readonly]), textarea').forEach(el => { el.value = ''; });
+        root.querySelectorAll('select').forEach(el => { el.selectedIndex = 0; });
+        const nr2 = root.querySelector('#prd-auftragsnr');
+        if (nr2) nr2.value = ADLStore.produktionsauftraege.nextNr('PRD', 'nr');
+        delete root.dataset.prdEditId;
+      });
+    }
+  }
+
+  function updatePrdKpis(all, root) {
+    const set = (id, v) => { const el = root?.querySelector('#' + id); if (el) el.textContent = v; };
+    set('kpi-prd-gesamt',        all.length);
+    set('kpi-prd-laufend',       all.filter(r => r.status === 'Laufend').length);
+    set('kpi-prd-abgeschlossen', all.filter(r => r.status === 'Abgeschlossen').length);
+    set('kpi-prd-verzoegert',    all.filter(r => r.status === 'Verzögert').length);
+  }
+
+  const PRD_PER_PAGE = 10;
+
+  function renderProduktionsdatenbank(root, page) {
+    const tbody = root.querySelector('.data-table tbody');
+    if (!tbody) return;
+    page = page || 1;
+
+    const all   = ADLStore.produktionsauftraege.getAll();
+    updatePrdKpis(all, root);
+
+    const searchEl = root.querySelector('#prd-search');
+    const linieEl  = root.querySelector('#prd-filter-linie');
+    const statusEl = root.querySelector('#prd-filter-status');
+    const q        = (searchEl?.value ?? '').toLowerCase();
+    const linie    = linieEl?.value ?? '';
+    const status   = statusEl?.value ?? '';
+
+    let rows = all;
+    if (q)      rows = rows.filter(r => (r.nr||'').toLowerCase().includes(q) || (r.bezeichnung||'').toLowerCase().includes(q) || (r.artikelnr||'').toLowerCase().includes(q));
+    if (linie)  rows = rows.filter(r => r.linie === linie);
+    if (status) rows = rows.filter(r => r.status === status);
+
+    const total      = rows.length;
+    const totalPages = Math.max(1, Math.ceil(total / PRD_PER_PAGE));
+    page             = Math.min(Math.max(1, page), totalPages);
+    const slice      = rows.slice((page - 1) * PRD_PER_PAGE, page * PRD_PER_PAGE);
+
+    tbody.innerHTML = slice.length
+      ? slice.map(r => `
+          <tr>
+            <td class="td-mono">${escHtml(r.nr || '—')}</td>
+            <td>${escHtml(r.bezeichnung || '—')}</td>
+            <td class="td-mono">${escHtml(r.artikelnr || '—')}</td>
+            <td>${escHtml(r.menge || '—')}</td>
+            <td>${escHtml(r.linie || '—')}</td>
+            <td class="td-mono">${formatDate(r.start)}</td>
+            <td class="td-mono">${formatDate(r.ende)}</td>
+            <td>${badge(r.status || 'Planung')}</td>
+            <td style="white-space:nowrap">${editBtn('sites/Produktion.html', r.id)} ${deleteBtn('produktionsauftraege', r.id, r.nr || r.bezeichnung)}</td>
+          </tr>`).join('')
+      : `<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--text-tertiary)">Keine Produktionsaufträge gefunden</td></tr>`;
+
+    const infoEl = root.querySelector('.pagination-info');
+    const btnsEl = root.querySelector('.pagination-buttons');
+
+    if (infoEl) {
+      infoEl.textContent = total === 0
+        ? 'Keine Aufträge'
+        : `Zeigt ${(page - 1) * PRD_PER_PAGE + 1}–${Math.min(page * PRD_PER_PAGE, total)} von ${total} Aufträgen`;
+    }
+
+    if (btnsEl) {
+      let pageNums;
+      if (totalPages <= 7) {
+        pageNums = Array.from({ length: totalPages }, (_, i) => i + 1);
+      } else {
+        const s = new Set([1, 2, page - 1, page, page + 1, totalPages - 1, totalPages].filter(p => p >= 1 && p <= totalPages));
+        pageNums = [...s].sort((a, b) => a - b);
+      }
+      let html = `<button class="btn btn-sm" data-prd-prev ${page === 1 ? 'disabled' : ''}>${PREV_SVG}</button>`;
+      let prev = null;
+      for (const p of pageNums) {
+        if (prev !== null && p - prev > 1) html += `<span class="pagination-ellipsis">…</span>`;
+        html += `<button class="btn btn-sm${p === page ? ' btn-primary' : ''}" data-prd-pg="${p}">${p}</button>`;
+        prev = p;
+      }
+      html += `<button class="btn btn-sm" data-prd-next ${page === totalPages ? 'disabled' : ''}>${NEXT_SVG}</button>`;
+      btnsEl.innerHTML = html;
+      btnsEl.querySelectorAll('[data-prd-pg]').forEach(btn =>
+        btn.addEventListener('click', () => renderProduktionsdatenbank(root, +btn.dataset.prdPg))
+      );
+      btnsEl.querySelector('[data-prd-prev]')?.addEventListener('click', () => renderProduktionsdatenbank(root, page - 1));
+      btnsEl.querySelector('[data-prd-next]')?.addEventListener('click', () => renderProduktionsdatenbank(root, page + 1));
+    }
+
+    if (!root.dataset.prdSearchBound) {
+      root.dataset.prdSearchBound = '1';
+      searchEl?.addEventListener('input',  () => renderProduktionsdatenbank(root, 1));
+      linieEl?.addEventListener('change',  () => renderProduktionsdatenbank(root, 1));
+      statusEl?.addEventListener('change', () => renderProduktionsdatenbank(root, 1));
+    }
+  }
+
   const TITLE_MAP = {
-    'Artikeldatenbank':     renderArtikeldatenbank,
-    'Artikelbewegung':      renderArtikelbewegung,
-    'Bestelldatenbank':     renderBestelldatenbank,
-    'Lieferantenübersicht': renderLieferanten,
-    'Wareneingänge':        renderWareneingaenge,
-    'Wartungsdatenbank':    renderWartungsdatenbank,
-    'Geräteübersicht':      renderGeraeteuebersicht,
-    'Wartungshistorie':     renderWartungshistorie,
-    'Lager & Standorte':    renderLagerStandorte,
-    'Artikelverwaltung':    renderArtikelVerwaltung,
+    'Artikeldatenbank':                       renderArtikeldatenbank,
+    'Artikelbewegung':                        renderArtikelbewegung,
+    'Bestelldatenbank':                       renderBestelldatenbank,
+    'Lieferantenübersicht':                   renderLieferanten,
+    'Wareneingänge':                          renderWareneingaenge,
+    'Wartungsdatenbank':                      renderWartungsdatenbank,
+    'Geräteübersicht':                        renderGeraeteuebersicht,
+    'Wartungshistorie':                       renderWartungshistorie,
+    'Lager & Standorte':                      renderLagerStandorte,
+    'Artikelverwaltung':                      renderArtikelVerwaltung,
+    'Produktionsdatenbank':                   renderProduktionsdatenbank,
+    'Produkt- und Fertigungsinformationen':   renderProduktionForm,
   };
 
-  const ROOT_RENDERER_TITLES = new Set(['Lager & Standorte', 'Artikelverwaltung']);
+  const ROOT_RENDERER_TITLES = new Set(['Lager & Standorte', 'Artikelverwaltung', 'Produktionsdatenbank', 'Produkt- und Fertigungsinformationen']);
 
   function tryRender(root) {
     if (root.querySelector('#adl-dashboard')) { renderDashboard(root); return; }

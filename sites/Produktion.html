@@ -12,11 +12,38 @@
 <section class="container">
     <h2 class="section-title">Produkt- und Fertigungsinformationen</h2>
 
+    <!-- Auftragsnummer -->
+    <p class="form-group-label">Auftragsreferenz</p>
+    <div class="grid-4">
+        <div class="field">
+            <label>Auftrags-Nr.</label>
+            <input type="text" id="prd-auftragsnr" readonly placeholder="wird automatisch vergeben" style="opacity:.65;cursor:default" />
+        </div>
+        <div class="field">
+            <label>Status</label>
+            <select id="prd-status">
+                <option value="Planung">Planung</option>
+                <option value="Laufend">Laufend</option>
+                <option value="Pausiert">Pausiert</option>
+                <option value="Verzögert">Verzögert</option>
+                <option value="Abgeschlossen">Abgeschlossen</option>
+            </select>
+        </div>
+        <div class="field">
+            <label>Geplanter Start</label>
+            <input type="date" id="prd-start" />
+        </div>
+        <div class="field">
+            <label>Geplantes Ende</label>
+            <input type="date" id="prd-ende" />
+        </div>
+    </div>
+
     <!-- Produktdaten -->
     <p class="form-group-label">Produktdaten</p>
     <div class="grid-4">
         <div class="field">
-            <label>Produktname</label>
+            <label>Produktname *</label>
             <input type="text" id="produktname" placeholder="z. B. Hydraulikeinheit HE-400" />
         </div>
         <div class="field">
@@ -74,7 +101,7 @@
     <div class="grid-4">
         <div class="field">
             <label>Produktionsmenge</label>
-            <input type="number" id="produktionsmenge" placeholder="z. B. 50" />
+            <input type="number" id="produktionsmenge" placeholder="z. B. 50" min="1" />
         </div>
         <div class="field">
             <label>Produktionslinie</label>
@@ -89,7 +116,7 @@
         </div>
         <div class="field">
             <label>Arbeitsgänge</label>
-            <input type="number" id="arbeitsschritte" placeholder="z. B. 8" />
+            <input type="number" id="arbeitsschritte" placeholder="z. B. 8" min="1" />
         </div>
         <div class="field">
             <label>Fertigungsreihenfolge</label>
@@ -106,10 +133,6 @@
             <input type="text" id="werkzeuge" placeholder="z. B. Bohrer Ø12, Gewindeschneider" />
         </div>
         <div class="field">
-            <label>Arbeitszeitplanung</label>
-            <input type="date" id="arbeitszeitplanung" />
-        </div>
-        <div class="field">
             <label>Schichtplanung</label>
             <select id="schicht">
                 <option value=""></option>
@@ -118,6 +141,9 @@
                 <option>Nachtschicht</option>
                 <option>Vollbetrieb (24 h)</option>
             </select>
+        </div>
+        <div class="field">
+            <!-- Platzhalter für Grid-Ausrichtung -->
         </div>
     </div>
     <div class="grid-2">
@@ -133,8 +159,8 @@
 
     <!-- Buttons -->
     <div class="form-actions">
-        <button class="btn btn-primary">Speichern</button>
-        <button class="btn">Zurücksetzen</button>
+        <button class="btn btn-primary" id="prd-save">Speichern</button>
+        <button class="btn" id="prd-reset">Zurücksetzen</button>
     </div>
 </section>
 </main>
