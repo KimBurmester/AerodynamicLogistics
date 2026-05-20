@@ -131,6 +131,35 @@
       ].forEach(r => ADLStore.zuweisungen.add(r));
     }
 
+    /* Stücklisten */
+    if (!ADLStore.stuecklisten.count()) {
+      [
+        {
+          nr: 'BOM-HE400-v3', produktname: 'Hydraulikeinheit HE-400', artikelnummer: 'ART-2026-0042',
+          version: 'Rev. 3.1', status: 'Freigegeben', gueltigAb: '2026-01-01', gueltigBis: '2026-12-31',
+          ersteller: 'K. Burmester',
+          positionen: [
+            { pos:'010', artikelnummer:'239324875', bezeichnung:'Hydraulikschlauch DN16',         menge:'4',  einheit:'Stück', ebene:'1', lagerort:'Halle 1 / R3 / F2',  kommentar:'Druckbeständig bis 400 bar' },
+            { pos:'020', artikelnummer:'394857231', bezeichnung:'Drucksensor 0–400 bar',          menge:'2',  einheit:'Stück', ebene:'1', lagerort:'Halle 2 / R1 / F5',  kommentar:'Analogausgang 4–20 mA' },
+            { pos:'030', artikelnummer:'102938475', bezeichnung:'Kugelventil ½"',                 menge:'6',  einheit:'Stück', ebene:'1', lagerort:'Halle 2 / R3 / F9',  kommentar:'Edelstahl, PN 40' },
+            { pos:'040', artikelnummer:'847362918', bezeichnung:'O-Ring 50×3 NBR',               menge:'12', einheit:'Stück', ebene:'2', lagerort:'Halle 1 / R7 / F12', kommentar:'Für Kugelventil (Pos. 030)' },
+            { pos:'050', artikelnummer:'728364910', bezeichnung:'Hydrauliköl HLP 46',            menge:'20', einheit:'Liter', ebene:'1', lagerort:'Halle 1 / R1 / F1',  kommentar:'Erstbefüllung' },
+            { pos:'060', artikelnummer:'564738291', bezeichnung:'Pneumatikzylinder Ø50 Hub 200', menge:'1',  einheit:'Stück', ebene:'1', lagerort:'Halle 3 / R2 / F8',  kommentar:'Steuereinheit' },
+          ]
+        },
+        {
+          nr: 'BOM-DS200-v1', produktname: 'Drucksensorbaugruppe DS-200', artikelnummer: 'ART-2026-0107',
+          version: 'Rev. 1.0', status: 'Freigegeben', gueltigAb: '2026-01-10', gueltigBis: '2026-12-31',
+          ersteller: 'M. Schulz',
+          positionen: [
+            { pos:'010', artikelnummer:'394857231', bezeichnung:'Drucksensor 0–400 bar',  menge:'2',  einheit:'Stück', ebene:'1', lagerort:'Halle 2 / R1 / F5', kommentar:'Analogausgang 4–20 mA' },
+            { pos:'020', artikelnummer:'112233445', bezeichnung:'Signalverarbeitungsmodul', menge:'1', einheit:'Stück', ebene:'1', lagerort:'Halle 2 / R4 / F3', kommentar:'' },
+            { pos:'030', artikelnummer:'998877665', bezeichnung:'Kabelbaum DS-200',        menge:'1', einheit:'Satz',  ebene:'1', lagerort:'Halle 2 / R4 / F4', kommentar:'Vorkonfektioniert' },
+          ]
+        },
+      ].forEach(r => ADLStore.stuecklisten.add(r));
+    }
+
     /* Lieferanten */
     if (!ADLStore.lieferanten.count()) {
       [

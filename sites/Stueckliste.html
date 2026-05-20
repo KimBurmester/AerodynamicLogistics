@@ -9,13 +9,42 @@
 </head>
 <body>
 <main>
+<style>
+  .bom-selector-bar { display:flex; align-items:flex-end; gap:12px; margin-bottom:24px; flex-wrap:wrap; }
+  .bom-selector-bar .field { flex:1; min-width:220px; max-width:420px; margin:0; }
+  .data-table tbody tr { cursor: default; }
+  .data-table tbody td.td-actions { cursor: default; white-space: nowrap; text-align: right; }
+  .confirm-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 300; align-items: center; justify-content: center; padding: 16px; }
+  .confirm-overlay.open { display: flex; }
+  .confirm-box { background: var(--bg-primary); border: 0.5px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 28px 28px 22px; max-width: 440px; width: 100%; box-shadow: 0 16px 48px rgba(0,0,0,.2); }
+  .confirm-title { font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 10px; }
+  .confirm-msg   { font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 22px; }
+  .confirm-actions { display: flex; justify-content: flex-end; gap: 8px; }
+  .td-empty { text-align: center; padding: 40px !important; color: var(--text-tertiary); font-size: 13px; }
+  .pos-section-header { display:flex; align-items:center; justify-content:space-between; margin-top:24px; margin-bottom:8px; }
+  .pos-section-header .form-group-label { margin:0; }
+</style>
 <section class="container">
 
     <div class="page-header">
         <h2 class="section-title">Stückliste (BOM)</h2>
-        <button class="btn btn-primary btn-sm" data-action="neue-stueckliste">
+        <button class="btn btn-primary btn-sm" id="btn-neue-stueckliste">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Neue Stückliste
+        </button>
+    </div>
+
+    <!-- BOM-Auswahl -->
+    <div class="bom-selector-bar">
+        <div class="field">
+            <label>Vorhandene Stückliste laden</label>
+            <select id="bom-selector">
+                <option value="">— Neue Stückliste erstellen —</option>
+            </select>
+        </div>
+        <button class="btn btn-sm" id="btn-bom-loeschen" style="display:none; color:var(--danger-text);">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+            Stückliste löschen
         </button>
     </div>
 
@@ -43,7 +72,7 @@
         <div class="field">
             <label>Status</label>
             <select id="status">
-                <option value=""></option>
+                <option value="">— bitte wählen —</option>
                 <option>Entwurf</option>
                 <option>Freigegeben</option>
                 <option>Gesperrt</option>
@@ -65,9 +94,9 @@
     </div>
 
     <!-- Positionen -->
-    <div class="page-header">
+    <div class="pos-section-header">
         <p class="form-group-label">Positionen</p>
-        <button class="btn btn-sm" data-action="position-hinzufuegen">
+        <button class="btn btn-sm" id="btn-position-hinzufuegen">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Position hinzufügen
         </button>
@@ -88,84 +117,383 @@
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td class="td-mono">010</td>
-                    <td class="td-mono">239324875</td>
-                    <td>Hydraulikschlauch DN16</td>
-                    <td>4</td>
-                    <td>Stück</td>
-                    <td>1</td>
-                    <td>Halle 1 / R3 / F2</td>
-                    <td>Druckbeständig bis 400 bar</td>
-                    <td><button class="btn btn-sm btn-ghost"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-                <tr>
-                    <td class="td-mono">020</td>
-                    <td class="td-mono">394857231</td>
-                    <td>Drucksensor 0–400 bar</td>
-                    <td>2</td>
-                    <td>Stück</td>
-                    <td>1</td>
-                    <td>Halle 2 / R1 / F5</td>
-                    <td>Analogausgang 4–20 mA</td>
-                    <td><button class="btn btn-sm btn-ghost"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-                <tr>
-                    <td class="td-mono">030</td>
-                    <td class="td-mono">102938475</td>
-                    <td>Kugelventil ½"</td>
-                    <td>6</td>
-                    <td>Stück</td>
-                    <td>1</td>
-                    <td>Halle 2 / R3 / F9</td>
-                    <td>Edelstahl, PN 40</td>
-                    <td><button class="btn btn-sm btn-ghost"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-                <tr>
-                    <td class="td-mono">040</td>
-                    <td class="td-mono">847362918</td>
-                    <td>O-Ring 50×3 NBR</td>
-                    <td>12</td>
-                    <td>Stück</td>
-                    <td>2</td>
-                    <td>Halle 1 / R7 / F12</td>
-                    <td>Für Kugelventil (Pos. 030)</td>
-                    <td><button class="btn btn-sm btn-ghost"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-                <tr>
-                    <td class="td-mono">050</td>
-                    <td class="td-mono">728364910</td>
-                    <td>Hydrauliköl HLP 46</td>
-                    <td>20</td>
-                    <td>Liter</td>
-                    <td>1</td>
-                    <td>Halle 1 / R1 / F1</td>
-                    <td>Erstbefüllung</td>
-                    <td><button class="btn btn-sm btn-ghost"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-                <tr>
-                    <td class="td-mono">060</td>
-                    <td class="td-mono">564738291</td>
-                    <td>Pneumatikzylinder Ø50 Hub 200</td>
-                    <td>1</td>
-                    <td>Stück</td>
-                    <td>1</td>
-                    <td>Halle 3 / R2 / F8</td>
-                    <td>Steuereinheit</td>
-                    <td><button class="btn btn-sm btn-ghost"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-            </tbody>
+            <tbody id="bom-positionen-tbody"></tbody>
         </table>
     </div>
 
     <!-- Buttons -->
     <div class="form-actions">
-        <button class="btn btn-primary">Speichern</button>
-        <button class="btn">Zurücksetzen</button>
+        <button class="btn btn-primary" id="btn-bom-speichern">Speichern</button>
+        <button class="btn" id="btn-bom-zuruecksetzen">Zurücksetzen</button>
     </div>
 
 </section>
+
+<!-- Modal: Position hinzufügen / bearbeiten -->
+<div class="modal-overlay" id="modal-position" role="dialog" aria-modal="true"
+     aria-labelledby="modal-pos-title">
+  <div class="modal" style="max-width:720px;">
+    <div class="modal-header">
+      <h3 id="modal-pos-title">Position hinzufügen</h3>
+      <button class="modal-close" id="modal-pos-close" aria-label="Schließen">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="grid-4">
+        <div class="field">
+          <label>Pos.-Nr.</label>
+          <input type="text" id="pos-nr" placeholder="z. B. 010" />
+        </div>
+        <div class="field">
+          <label>Artikelnummer</label>
+          <input type="text" id="pos-artikelnummer" placeholder="z. B. 239324875" />
+        </div>
+        <div class="field" style="grid-column: span 2;">
+          <label>Bezeichnung</label>
+          <input type="text" id="pos-bezeichnung" placeholder="z. B. Hydraulikschlauch DN16" />
+        </div>
+      </div>
+      <div class="grid-4">
+        <div class="field">
+          <label>Menge</label>
+          <input type="text" id="pos-menge" placeholder="z. B. 4" />
+        </div>
+        <div class="field">
+          <label>Einheit</label>
+          <select id="pos-einheit">
+            <option value="">— wählen —</option>
+            <option>Stück</option>
+            <option>Liter</option>
+            <option>Meter</option>
+            <option>kg</option>
+            <option>Satz</option>
+            <option>Rolle</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Ebene</label>
+          <input type="number" id="pos-ebene" min="1" placeholder="1" />
+        </div>
+        <div class="field">
+          <label>Lagerort</label>
+          <input type="text" id="pos-lagerort" placeholder="z. B. Halle 1 / R3 / F2" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Kommentar</label>
+        <input type="text" id="pos-kommentar" placeholder="Optionaler Kommentar…" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" id="modal-pos-save">Speichern</button>
+      <button class="btn" id="modal-pos-cancel">Abbrechen</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bestätigungsdialog: Position löschen -->
+<div class="confirm-overlay" id="pos-confirm-overlay">
+  <div class="confirm-box">
+    <div class="confirm-title">Position löschen</div>
+    <div class="confirm-msg" id="pos-confirm-msg"></div>
+    <div class="confirm-actions">
+      <button class="btn" id="pos-confirm-cancel">Abbrechen</button>
+      <button class="btn btn-danger" id="pos-confirm-ok">Endgültig löschen</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bestätigungsdialog: Stückliste löschen -->
+<div class="confirm-overlay" id="bom-confirm-overlay">
+  <div class="confirm-box">
+    <div class="confirm-title">Stückliste löschen</div>
+    <div class="confirm-msg" id="bom-confirm-msg"></div>
+    <div class="confirm-actions">
+      <button class="btn" id="bom-confirm-cancel">Abbrechen</button>
+      <button class="btn btn-danger" id="bom-confirm-ok">Endgültig löschen</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  const store = ADLStore.stuecklisten;
+
+  let currentBomId = null;   // null = neue Stückliste
+  let positions    = [];     // Arbeitskopie der Positionszeilen
+  let editPosIdx   = null;   // Index der gerade bearbeiteten Position, null = neu
+  let deletePosIdx = null;
+
+  const EDIT_SVG = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
+  const DEL_SVG  = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`;
+
+  function esc(s) {
+    return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  /* ---- BOM-Selector -------------------------------------------------- */
+
+  function refreshSelector(selectId) {
+    const sel = document.getElementById('bom-selector');
+    const all = store.getAll();
+    sel.innerHTML = '<option value="">— Neue Stückliste erstellen —</option>' +
+      all.map(b =>
+        `<option value="${esc(b.id)}"${b.id === selectId ? ' selected' : ''}>${esc(b.nr || b.id)} – ${esc(b.produktname || '')}</option>`
+      ).join('');
+    document.getElementById('btn-bom-loeschen').style.display = currentBomId ? '' : 'none';
+  }
+
+  /* ---- Stückliste laden ---------------------------------------------- */
+
+  function loadBom(id) {
+    if (!id) {
+      currentBomId = null;
+      clearForm();
+      return;
+    }
+    const bom = store.getById(id);
+    if (!bom) return;
+    currentBomId = id;
+    document.getElementById('bomNummer').value     = bom.nr            || '';
+    document.getElementById('produktname').value   = bom.produktname   || '';
+    document.getElementById('artikelnummer').value = bom.artikelnummer || '';
+    document.getElementById('version').value       = bom.version       || '';
+    document.getElementById('status').value        = bom.status        || '';
+    document.getElementById('gueltigAb').value     = bom.gueltigAb     || '';
+    document.getElementById('gueltigBis').value    = bom.gueltigBis    || '';
+    document.getElementById('ersteller').value     = bom.ersteller     || '';
+    positions = (bom.positionen || []).map(p => ({ ...p }));
+    renderPositionen();
+    refreshSelector(id);
+  }
+
+  function clearForm() {
+    ['bomNummer','produktname','artikelnummer','version','gueltigAb','gueltigBis','ersteller']
+      .forEach(id => { document.getElementById(id).value = ''; });
+    document.getElementById('status').value = '';
+    positions = [];
+    renderPositionen();
+    refreshSelector(null);
+  }
+
+  /* ---- Positions-Tabelle rendern ------------------------------------- */
+
+  function renderPositionen() {
+    const tbody = document.getElementById('bom-positionen-tbody');
+    if (!positions.length) {
+      tbody.innerHTML = `<tr><td colspan="9" class="td-empty">Noch keine Positionen. Klicke auf „Position hinzufügen".</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = positions.map((p, idx) => `
+      <tr data-idx="${idx}">
+        <td class="td-mono">${esc(p.pos)}</td>
+        <td class="td-mono">${esc(p.artikelnummer)}</td>
+        <td>${esc(p.bezeichnung)}</td>
+        <td style="color:var(--text-secondary);">${esc(p.menge)}</td>
+        <td style="color:var(--text-secondary);">${esc(p.einheit)}</td>
+        <td style="color:var(--text-secondary);">${esc(p.ebene)}</td>
+        <td style="color:var(--text-secondary);">${esc(p.lagerort)}</td>
+        <td style="color:var(--text-secondary); font-size:12px;">${esc(p.kommentar)}</td>
+        <td class="td-actions">
+          <button class="btn btn-sm" title="Bearbeiten"
+                  data-action="edit" data-idx="${idx}">${EDIT_SVG}</button>
+          <button class="btn btn-sm" title="Löschen" style="color:var(--danger-text);"
+                  data-action="delete" data-idx="${idx}"
+                  data-label="${esc(p.pos)} – ${esc(p.bezeichnung)}">${DEL_SVG}</button>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ---- Nächste Positions-Nummer -------------------------------------- */
+
+  function nextPosNr() {
+    if (!positions.length) return '010';
+    const nums = positions.map(p => parseInt(p.pos) || 0);
+    return String(Math.max(...nums) + 10).padStart(3, '0');
+  }
+
+  /* ---- Positions-Modal ----------------------------------------------- */
+
+  const posModal = document.getElementById('modal-position');
+
+  function getPosVal(id) { return (document.getElementById(id)?.value ?? '').trim(); }
+  function setPosVal(id, v) { const el = document.getElementById(id); if (el) el.value = v ?? ''; }
+
+  function openPosModal(idx) {
+    editPosIdx = idx;
+    const p = idx !== null ? positions[idx] : null;
+    document.getElementById('modal-pos-title').textContent =
+      idx !== null ? 'Position bearbeiten' : 'Position hinzufügen';
+    setPosVal('pos-nr',            p?.pos            || nextPosNr());
+    setPosVal('pos-artikelnummer', p?.artikelnummer  || '');
+    setPosVal('pos-bezeichnung',   p?.bezeichnung    || '');
+    setPosVal('pos-menge',         p?.menge          || '');
+    setPosVal('pos-einheit',       p?.einheit        || '');
+    setPosVal('pos-ebene',         p?.ebene          || '1');
+    setPosVal('pos-lagerort',      p?.lagerort       || '');
+    setPosVal('pos-kommentar',     p?.kommentar      || '');
+    posModal.classList.add('open');
+    document.getElementById('pos-bezeichnung').focus();
+  }
+
+  function closePosModal() { posModal.classList.remove('open'); editPosIdx = null; }
+
+  function savePosModal() {
+    const bezeichnung = getPosVal('pos-bezeichnung');
+    if (!bezeichnung) { document.getElementById('pos-bezeichnung').focus(); return; }
+    const p = {
+      pos:           getPosVal('pos-nr'),
+      artikelnummer: getPosVal('pos-artikelnummer'),
+      bezeichnung,
+      menge:         getPosVal('pos-menge'),
+      einheit:       getPosVal('pos-einheit'),
+      ebene:         getPosVal('pos-ebene'),
+      lagerort:      getPosVal('pos-lagerort'),
+      kommentar:     getPosVal('pos-kommentar'),
+    };
+    if (editPosIdx !== null) {
+      positions[editPosIdx] = p;
+    } else {
+      positions.push(p);
+    }
+    closePosModal();
+    renderPositionen();
+  }
+
+  /* ---- Positions-Löschen-Dialog -------------------------------------- */
+
+  const posConfirm = document.getElementById('pos-confirm-overlay');
+
+  function openPosConfirm(idx, label) {
+    deletePosIdx = idx;
+    document.getElementById('pos-confirm-msg').textContent =
+      `Soll Position „${label}" wirklich gelöscht werden? Diese Aktion kann nicht rückgängig gemacht werden.`;
+    posConfirm.classList.add('open');
+  }
+  function closePosConfirm() { posConfirm.classList.remove('open'); deletePosIdx = null; }
+
+  /* ---- Stückliste speichern ------------------------------------------ */
+
+  function saveBom() {
+    const bomNummer = document.getElementById('bomNummer').value.trim();
+    if (!bomNummer) { document.getElementById('bomNummer').focus(); return; }
+    const data = {
+      nr:            bomNummer,
+      produktname:   document.getElementById('produktname').value.trim(),
+      artikelnummer: document.getElementById('artikelnummer').value.trim(),
+      version:       document.getElementById('version').value.trim(),
+      status:        document.getElementById('status').value,
+      gueltigAb:     document.getElementById('gueltigAb').value,
+      gueltigBis:    document.getElementById('gueltigBis').value,
+      ersteller:     document.getElementById('ersteller').value.trim(),
+      positionen:    positions,
+    };
+    if (currentBomId) {
+      store.update(currentBomId, data);
+    } else {
+      const saved = store.add(data);
+      currentBomId = saved.id;
+    }
+    refreshSelector(currentBomId);
+  }
+
+  /* ---- Stückliste-Löschen-Dialog ------------------------------------- */
+
+  const bomConfirm = document.getElementById('bom-confirm-overlay');
+
+  function openBomConfirm() {
+    const nr = document.getElementById('bomNummer').value.trim() || 'diese Stückliste';
+    document.getElementById('bom-confirm-msg').textContent =
+      `Soll Stückliste „${nr}" wirklich endgültig gelöscht werden? Alle Positionen werden ebenfalls entfernt. Diese Aktion kann nicht rückgängig gemacht werden.`;
+    bomConfirm.classList.add('open');
+  }
+  function closeBomConfirm() { bomConfirm.classList.remove('open'); }
+
+  /* ---- Event-Listener ------------------------------------------------ */
+
+  document.getElementById('bom-selector').addEventListener('change', function () {
+    loadBom(this.value);
+  });
+
+  document.getElementById('btn-neue-stueckliste').addEventListener('click', () => {
+    document.getElementById('bom-selector').value = '';
+    loadBom(null);
+  });
+
+  document.getElementById('btn-position-hinzufuegen').addEventListener('click', () => {
+    openPosModal(null);
+  });
+
+  document.getElementById('btn-bom-speichern').addEventListener('click', saveBom);
+
+  document.getElementById('btn-bom-zuruecksetzen').addEventListener('click', () => {
+    if (currentBomId) { loadBom(currentBomId); } else { clearForm(); }
+  });
+
+  document.getElementById('btn-bom-loeschen').addEventListener('click', openBomConfirm);
+
+  /* Positions-Modal */
+  document.getElementById('modal-pos-close').addEventListener('click', closePosModal);
+  document.getElementById('modal-pos-cancel').addEventListener('click', closePosModal);
+  posModal.addEventListener('click', e => { if (e.target === posModal) closePosModal(); });
+  document.getElementById('modal-pos-save').addEventListener('click', savePosModal);
+  posModal.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') { e.preventDefault(); savePosModal(); }
+  });
+
+  /* Klick in der Positions-Tabelle */
+  document.getElementById('bom-positionen-tbody').addEventListener('click', e => {
+    const btn = e.target.closest('[data-action]');
+    if (!btn) return;
+    const idx = parseInt(btn.dataset.idx);
+    if (btn.dataset.action === 'edit') {
+      openPosModal(idx);
+    } else if (btn.dataset.action === 'delete') {
+      openPosConfirm(idx, btn.dataset.label);
+    }
+  });
+
+  /* Positions-Bestätigung */
+  document.getElementById('pos-confirm-cancel').addEventListener('click', closePosConfirm);
+  posConfirm.addEventListener('click', e => { if (e.target === posConfirm) closePosConfirm(); });
+  document.getElementById('pos-confirm-ok').addEventListener('click', () => {
+    if (deletePosIdx !== null) {
+      positions.splice(deletePosIdx, 1);
+      closePosConfirm();
+      renderPositionen();
+    }
+  });
+
+  /* Stückliste-Bestätigung */
+  document.getElementById('bom-confirm-cancel').addEventListener('click', closeBomConfirm);
+  bomConfirm.addEventListener('click', e => { if (e.target === bomConfirm) closeBomConfirm(); });
+  document.getElementById('bom-confirm-ok').addEventListener('click', () => {
+    if (currentBomId) {
+      store.remove(currentBomId);
+      currentBomId = null;
+      positions = [];
+      closeBomConfirm();
+      clearForm();
+    }
+  });
+
+  /* Escape schließt alle Dialoge */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closePosModal(); closePosConfirm(); closeBomConfirm(); }
+  });
+
+  /* ---- Init ---------------------------------------------------------- */
+  refreshSelector(null);
+  renderPositionen();
+
+})();
+</script>
 </main>
 </body>
 </html>
