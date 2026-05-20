@@ -66,7 +66,9 @@
         </div>
         <div class="field">
             <label>Stückliste (BOM)</label>
-            <input type="text" id="bom" placeholder="z. B. BOM-HE400-v3" />
+            <select id="bom">
+                <option value="">— keine / nicht zugeordnet —</option>
+            </select>
         </div>
         <div class="field">
             <label>Technische Zeichnungen</label>
@@ -164,5 +166,17 @@
     </div>
 </section>
 </main>
+<script>
+(function () {
+  'use strict';
+  const sel = document.getElementById('bom');
+  ADLStore.stuecklisten.getAll().forEach(function (b) {
+    const opt = document.createElement('option');
+    opt.value       = b.nr || b.id;
+    opt.textContent = (b.nr || b.id) + (b.produktname ? ' – ' + b.produktname : '');
+    sel.appendChild(opt);
+  });
+})();
+</script>
 </body>
 </html>
