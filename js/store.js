@@ -118,6 +118,19 @@
       ].forEach(r => ADLStore.produktionsauftraege.add(r));
     }
 
+    /* Zuweisungen (Produktionsplan) */
+    if (!ADLStore.zuweisungen.count()) {
+      [
+        { auftragsNr:'PRD-2026-0002', produkt:'Drucksensorbaugruppe DS-200', halle:'Halle 2', linie:'Linie 2 / Takt 3',      mitarbeiter:'M. Schulz',    arbeitsschritt:'Montage',           maschine:'CNC-Fräse M-04',      von:'2026-01-10', bis:'2026-01-14', status:'Laufend'       },
+        { auftragsNr:'PRD-2026-0002', produkt:'Drucksensorbaugruppe DS-200', halle:'Halle 2', linie:'Linie 2 / Takt 4',      mitarbeiter:'J. Weber',     arbeitsschritt:'Qualitätskontrolle',maschine:'Prüfstand P-02',      von:'2026-01-14', bis:'2026-01-16', status:'Offen'         },
+        { auftragsNr:'PRD-2026-0003', produkt:'Pneumatikmodul PM-50',        halle:'Halle 1', linie:'Montagelinie A / Takt 1',mitarbeiter:'K. Burmester', arbeitsschritt:'Vorbereitung',      maschine:'–',                   von:'2026-01-12', bis:'2026-01-13', status:'Abgeschlossen' },
+        { auftragsNr:'PRD-2026-0003', produkt:'Pneumatikmodul PM-50',        halle:'Halle 1', linie:'Montagelinie A / Takt 2',mitarbeiter:'M. Schulz',    arbeitsschritt:'Montage',           maschine:'Montageroboter R-01', von:'2026-01-13', bis:'2026-01-18', status:'Laufend'       },
+        { auftragsNr:'PRD-2026-0005', produkt:'Hydraulikschlauchset HLP',    halle:'Halle 3', linie:'Linie 3 / Takt 1',      mitarbeiter:'J. Weber',     arbeitsschritt:'Zuschnitt',         maschine:'Schneidanlage SA-01', von:'2026-01-18', bis:'2026-01-19', status:'Verzögert'     },
+        { auftragsNr:'PRD-2026-0006', produkt:'Steuerventil SV-300',         halle:'Halle 2', linie:'Linie 2 / Takt 2',      mitarbeiter:'K. Burmester', arbeitsschritt:'Fräsen',            maschine:'CNC-Fräse M-02',      von:'2026-01-20', bis:'2026-01-23', status:'Offen'         },
+        { auftragsNr:'PRD-2026-0007', produkt:'Druckbehälter DB-60',         halle:'Halle 1', linie:'Montagelinie B / Takt 1',mitarbeiter:'M. Schulz',    arbeitsschritt:'Schweißen',         maschine:'Schweißanlage SW-03', von:'2026-01-22', bis:'2026-01-27', status:'Planung'       },
+      ].forEach(r => ADLStore.zuweisungen.add(r));
+    }
+
     /* Lieferanten */
     if (!ADLStore.lieferanten.count()) {
       [

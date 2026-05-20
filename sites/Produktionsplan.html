@@ -9,11 +9,22 @@
 </head>
 <body>
 <main>
+<style>
+  .data-table tbody tr { cursor: pointer; }
+  .data-table tbody td.td-actions { cursor: default; white-space: nowrap; text-align: right; }
+  .confirm-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 300; align-items: center; justify-content: center; padding: 16px; }
+  .confirm-overlay.open { display: flex; }
+  .confirm-box { background: var(--bg-primary); border: 0.5px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 28px 28px 22px; max-width: 440px; width: 100%; box-shadow: 0 16px 48px rgba(0,0,0,.2); }
+  .confirm-title { font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 10px; }
+  .confirm-msg   { font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 22px; }
+  .confirm-actions { display: flex; justify-content: flex-end; gap: 8px; }
+  .td-empty { text-align: center; padding: 40px !important; color: var(--text-tertiary); font-size: 13px; }
+</style>
 <section class="container">
 
     <div class="page-header">
         <h2 class="section-title">Produktionsplan</h2>
-        <button class="btn btn-primary btn-sm" data-action="neue-zuweisung">
+        <button class="btn btn-primary btn-sm" id="btn-neue-zuweisung">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Neue Zuweisung
         </button>
@@ -23,19 +34,19 @@
     <div class="grid-4 kpi-row">
         <div class="metric-card">
             <div class="metric-label">Zuweisungen gesamt</div>
-            <div class="metric-value">87</div>
+            <div class="metric-value" id="kpi-zuw-gesamt">—</div>
         </div>
         <div class="metric-card">
-            <div class="metric-label">Diese Woche</div>
-            <div class="metric-value metric-value-info">12</div>
+            <div class="metric-label">Laufend</div>
+            <div class="metric-value metric-value-info" id="kpi-zuw-laufend">—</div>
         </div>
         <div class="metric-card">
             <div class="metric-label">Mitarbeiter im Einsatz</div>
-            <div class="metric-value metric-value-warning">18</div>
+            <div class="metric-value metric-value-warning" id="kpi-zuw-mitarbeiter">—</div>
         </div>
         <div class="metric-card">
             <div class="metric-label">Maschinen belegt</div>
-            <div class="metric-value metric-value-success">9</div>
+            <div class="metric-value metric-value-success" id="kpi-zuw-maschinen">—</div>
         </div>
     </div>
 
@@ -43,31 +54,30 @@
     <div class="filter-bar">
         <div class="search-field">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" placeholder="Auftrags-Nr., Produkt oder Mitarbeiter suchen…" />
+            <input type="text" id="zuw-search" placeholder="Auftrags-Nr., Produkt oder Mitarbeiter suchen…" />
         </div>
         <div class="field min-w-170">
-            <select>
+            <select id="zuw-filter-auftrag">
                 <option value="">Alle Produktionsaufträge</option>
-                <option>PRD-2026-0001 – Hydraulikeinheit HE-400</option>
-                <option>PRD-2026-0002 – Drucksensorbaugruppe DS-200</option>
-                <option>PRD-2026-0003 – Pneumatikmodul PM-50</option>
-                <option>PRD-2026-0004 – Kugelventilblock KVB-40</option>
-                <option>PRD-2026-0005 – Hydraulikschlauchset HLP</option>
-                <option>PRD-2026-0006 – Steuerventil SV-300</option>
-                <option>PRD-2026-0007 – Druckbehälter DB-60</option>
-                <option>PRD-2026-0008 – Filtereinheit FE-200</option>
             </select>
         </div>
         <div class="field min-w-150">
-            <select>
+            <select id="zuw-filter-halle">
                 <option value="">Alle Hallen</option>
                 <option>Halle 1</option>
                 <option>Halle 2</option>
                 <option>Halle 3</option>
             </select>
         </div>
-        <div class="field min-w-150">
-            <input type="date" title="Woche ab" />
+        <div class="field min-w-160">
+            <select id="zuw-filter-status">
+                <option value="">Alle Status</option>
+                <option>Offen</option>
+                <option>Laufend</option>
+                <option>Abgeschlossen</option>
+                <option>Verzögert</option>
+                <option>Planung</option>
+            </select>
         </div>
     </div>
 
@@ -88,114 +98,368 @@
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td class="td-mono">PRD-2026-0002</td>
-                    <td>Drucksensorbaugruppe DS-200</td>
-                    <td>Halle 2</td>
-                    <td>Linie 2 / Takt 3</td>
-                    <td>M. Schulz</td>
-                    <td>Montage</td>
-                    <td class="td-mono">CNC-Fräse M-04</td>
-                    <td class="td-mono">10.01.–14.01.</td>
-                    <td><span class="badge badge-info"><span class="dot"></span>Laufend</span></td>
-                    <td><button class="btn btn-sm btn-ghost" data-action="neue-zuweisung"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-                <tr>
-                    <td class="td-mono">PRD-2026-0002</td>
-                    <td>Drucksensorbaugruppe DS-200</td>
-                    <td>Halle 2</td>
-                    <td>Linie 2 / Takt 4</td>
-                    <td>J. Weber</td>
-                    <td>Qualitätskontrolle</td>
-                    <td class="td-mono">Prüfstand P-02</td>
-                    <td class="td-mono">14.01.–16.01.</td>
-                    <td><span class="badge badge-purple"><span class="dot"></span>Offen</span></td>
-                    <td><button class="btn btn-sm btn-ghost" data-action="neue-zuweisung"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-                <tr>
-                    <td class="td-mono">PRD-2026-0003</td>
-                    <td>Pneumatikmodul PM-50</td>
-                    <td>Halle 1</td>
-                    <td>Montagelinie A / Takt 1</td>
-                    <td>K. Burmester</td>
-                    <td>Vorbereitung</td>
-                    <td class="td-mono">–</td>
-                    <td class="td-mono">12.01.–13.01.</td>
-                    <td><span class="badge badge-success"><span class="dot"></span>Abgeschlossen</span></td>
-                    <td><button class="btn btn-sm btn-ghost" data-action="neue-zuweisung"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-                <tr>
-                    <td class="td-mono">PRD-2026-0003</td>
-                    <td>Pneumatikmodul PM-50</td>
-                    <td>Halle 1</td>
-                    <td>Montagelinie A / Takt 2</td>
-                    <td>M. Schulz</td>
-                    <td>Montage</td>
-                    <td class="td-mono">Montageroboter R-01</td>
-                    <td class="td-mono">13.01.–18.01.</td>
-                    <td><span class="badge badge-info"><span class="dot"></span>Laufend</span></td>
-                    <td><button class="btn btn-sm btn-ghost" data-action="neue-zuweisung"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-                <tr>
-                    <td class="td-mono">PRD-2026-0005</td>
-                    <td>Hydraulikschlauchset HLP</td>
-                    <td>Halle 3</td>
-                    <td>Linie 3 / Takt 1</td>
-                    <td>J. Weber</td>
-                    <td>Zuschnitt</td>
-                    <td class="td-mono">Schneidanlage SA-01</td>
-                    <td class="td-mono">18.01.–19.01.</td>
-                    <td><span class="badge badge-danger"><span class="dot"></span>Verzögert</span></td>
-                    <td><button class="btn btn-sm btn-ghost" data-action="neue-zuweisung"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-                <tr>
-                    <td class="td-mono">PRD-2026-0006</td>
-                    <td>Steuerventil SV-300</td>
-                    <td>Halle 2</td>
-                    <td>Linie 2 / Takt 2</td>
-                    <td>K. Burmester</td>
-                    <td>Fräsen</td>
-                    <td class="td-mono">CNC-Fräse M-02</td>
-                    <td class="td-mono">20.01.–23.01.</td>
-                    <td><span class="badge badge-purple"><span class="dot"></span>Offen</span></td>
-                    <td><button class="btn btn-sm btn-ghost" data-action="neue-zuweisung"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-                <tr>
-                    <td class="td-mono">PRD-2026-0007</td>
-                    <td>Druckbehälter DB-60</td>
-                    <td>Halle 1</td>
-                    <td>Montagelinie B / Takt 1</td>
-                    <td>M. Schulz</td>
-                    <td>Schweißen</td>
-                    <td class="td-mono">Schweißanlage SW-03</td>
-                    <td class="td-mono">22.01.–27.01.</td>
-                    <td><span class="badge badge-purple"><span class="dot"></span>Planung</span></td>
-                    <td><button class="btn btn-sm btn-ghost" data-action="neue-zuweisung"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-            </tbody>
+            <tbody id="zuw-tbody"></tbody>
         </table>
     </div>
 
     <!-- Pagination -->
     <div class="pagination-row">
-        <span class="pagination-info">Zeigt 1–7 von 87 Zuweisungen</span>
-        <div class="pagination-buttons">
-            <button class="btn btn-sm" disabled>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-            </button>
-            <button class="btn btn-sm btn-primary">1</button>
-            <button class="btn btn-sm">2</button>
-            <button class="btn btn-sm">3</button>
-            <span class="pagination-ellipsis">…</span>
-            <button class="btn btn-sm">11</button>
-            <button class="btn btn-sm">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-            </button>
-        </div>
+        <span class="pagination-info" id="zuw-info">—</span>
+        <div class="pagination-buttons"></div>
     </div>
 
 </section>
+
+<!-- Modal: Neue Zuweisung / Bearbeiten -->
+<div class="modal-overlay" id="modal-zuw" role="dialog" aria-modal="true"
+     aria-labelledby="modal-zuw-title">
+  <div class="modal" style="max-width:860px;">
+    <div class="modal-header">
+      <h3 id="modal-zuw-title">Neue Zuweisung anlegen</h3>
+      <button class="modal-close" id="modal-zuw-close" aria-label="Schließen">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+
+      <p class="form-group-label">Produktionsauftrag</p>
+      <div class="grid-4">
+        <div class="field">
+          <label>Auftrags-Nr.</label>
+          <select id="zuw-auftragsNr">
+            <option value="">— bitte wählen —</option>
+          </select>
+        </div>
+        <div class="field" style="grid-column: span 2;">
+          <label>Produkt / Bezeichnung</label>
+          <input type="text" id="zuw-produkt" placeholder="wird automatisch befüllt" />
+        </div>
+        <div class="field">
+          <label>Status</label>
+          <select id="zuw-status">
+            <option value="">— bitte wählen —</option>
+            <option>Offen</option>
+            <option>Laufend</option>
+            <option>Abgeschlossen</option>
+            <option>Verzögert</option>
+            <option>Planung</option>
+          </select>
+        </div>
+      </div>
+
+      <p class="form-group-label">Arbeitsplan</p>
+      <div class="grid-4">
+        <div class="field">
+          <label>Halle</label>
+          <select id="zuw-halle">
+            <option value="">— bitte wählen —</option>
+            <option>Halle 1</option>
+            <option>Halle 2</option>
+            <option>Halle 3</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Linie / Takt</label>
+          <input type="text" id="zuw-linie" placeholder="z. B. Linie 2 / Takt 3" />
+        </div>
+        <div class="field">
+          <label>Arbeitsschritt</label>
+          <select id="zuw-arbeitsschritt">
+            <option value="">— bitte wählen —</option>
+            <option>Vorbereitung</option>
+            <option>Zuschnitt</option>
+            <option>Fräsen</option>
+            <option>Schweißen</option>
+            <option>Montage</option>
+            <option>Qualitätskontrolle</option>
+            <option>Prüfung</option>
+            <option>Verpackung</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Maschine</label>
+          <input type="text" id="zuw-maschine" placeholder="z. B. CNC-Fräse M-04" />
+        </div>
+      </div>
+
+      <p class="form-group-label">Zeitraum &amp; Personal</p>
+      <div class="grid-4">
+        <div class="field">
+          <label>Von</label>
+          <input type="date" id="zuw-von" />
+        </div>
+        <div class="field">
+          <label>Bis</label>
+          <input type="date" id="zuw-bis" />
+        </div>
+        <div class="field">
+          <label>Mitarbeiter</label>
+          <input type="text" id="zuw-mitarbeiter" placeholder="z. B. K. Burmester" />
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" id="modal-zuw-save">Speichern</button>
+      <button class="btn" id="modal-zuw-cancel">Abbrechen</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bestätigungsdialog: Löschen -->
+<div class="confirm-overlay" id="zuw-confirm-overlay">
+  <div class="confirm-box">
+    <div class="confirm-title">Zuweisung löschen</div>
+    <div class="confirm-msg" id="zuw-confirm-msg"></div>
+    <div class="confirm-actions">
+      <button class="btn" id="zuw-confirm-cancel">Abbrechen</button>
+      <button class="btn btn-danger" id="zuw-confirm-ok">Endgültig löschen</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  const store  = ADLStore.zuweisungen;
+  let editId   = null;
+  let deleteId = null;
+  let allData  = [];
+
+  const BADGE = {
+    'Laufend':       'info',
+    'Offen':         'secondary',
+    'Abgeschlossen': 'success',
+    'Verzögert':     'danger',
+    'Planung':       'warning',
+  };
+  function badge(s) {
+    if (!s) return '–';
+    return `<span class="badge badge-${BADGE[s] || 'info'}"><span class="dot"></span>${esc(s)}</span>`;
+  }
+  function esc(s) {
+    return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function fmtDateShort(iso) {
+    if (!iso) return '–';
+    const d = new Date(iso);
+    if (isNaN(d)) return iso;
+    return d.toLocaleDateString('de-DE', { day:'2-digit', month:'2-digit' }) + '.';
+  }
+
+  function renderKPIs(data) {
+    document.getElementById('kpi-zuw-gesamt').textContent     = data.length;
+    document.getElementById('kpi-zuw-laufend').textContent    = data.filter(r => r.status === 'Laufend').length;
+    const laufend = data.filter(r => r.status === 'Laufend');
+    document.getElementById('kpi-zuw-mitarbeiter').textContent =
+      new Set(laufend.map(r => r.mitarbeiter).filter(Boolean)).size;
+    document.getElementById('kpi-zuw-maschinen').textContent  =
+      new Set(laufend.map(r => r.maschine).filter(m => m && m !== '–')).size;
+  }
+
+  function fillAuftragFilter(data) {
+    const sel = document.getElementById('zuw-filter-auftrag');
+    const cur = sel.value;
+    const seen = new Set();
+    const opts = ['<option value="">Alle Produktionsaufträge</option>'];
+    data.forEach(r => {
+      if (!seen.has(r.auftragsNr)) {
+        seen.add(r.auftragsNr);
+        opts.push(`<option value="${esc(r.auftragsNr)}">${esc(r.auftragsNr)} – ${esc(r.produkt)}</option>`);
+      }
+    });
+    sel.innerHTML = opts.join('');
+    if (cur) sel.value = cur;
+  }
+
+  function fillModalAuftragSelect(selectedNr) {
+    const sel = document.getElementById('zuw-auftragsNr');
+    const prdList = ADLStore.produktionsauftraege.getAll();
+    sel.innerHTML = '<option value="">— bitte wählen —</option>' +
+      prdList.map(p =>
+        `<option value="${esc(p.nr)}" data-bezeichnung="${esc(p.bezeichnung)}">${esc(p.nr)} – ${esc(p.bezeichnung)}</option>`
+      ).join('');
+    if (selectedNr) sel.value = selectedNr;
+  }
+
+  const EDIT_SVG = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
+  const DEL_SVG  = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`;
+
+  function renderTable(data) {
+    const tbody = document.getElementById('zuw-tbody');
+    const total = allData.length;
+    document.getElementById('zuw-info').textContent =
+      data.length === total
+        ? `${total} Zuweisung${total !== 1 ? 'en' : ''} im System`
+        : `${data.length} von ${total} Zuweisungen`;
+
+    if (!data.length) {
+      tbody.innerHTML = `<tr><td colspan="10" class="td-empty">Keine Zuweisungen gefunden.</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = data.map(r => `
+      <tr data-id="${esc(r.id)}">
+        <td class="td-mono">${esc(r.auftragsNr || '–')}</td>
+        <td>${esc(r.produkt || '–')}</td>
+        <td style="color:var(--text-secondary);">${esc(r.halle || '–')}</td>
+        <td style="color:var(--text-secondary);">${esc(r.linie || '–')}</td>
+        <td style="color:var(--text-secondary);">${esc(r.mitarbeiter || '–')}</td>
+        <td style="color:var(--text-secondary);">${esc(r.arbeitsschritt || '–')}</td>
+        <td class="td-mono">${esc(r.maschine || '–')}</td>
+        <td class="td-mono" style="white-space:nowrap;">${fmtDateShort(r.von)}–${fmtDateShort(r.bis)}</td>
+        <td>${badge(r.status)}</td>
+        <td class="td-actions">
+          <button class="btn btn-sm" title="Bearbeiten"
+                  data-action="edit" data-id="${esc(r.id)}">${EDIT_SVG}</button>
+          <button class="btn btn-sm" title="Löschen" style="color:var(--danger-text);"
+                  data-action="delete" data-id="${esc(r.id)}"
+                  data-label="${esc(r.auftragsNr || r.id)} – ${esc(r.arbeitsschritt || '')}">${DEL_SVG}</button>
+        </td>
+      </tr>`).join('');
+  }
+
+  function reload() {
+    allData = store.getAll();
+    renderKPIs(allData);
+    fillAuftragFilter(allData);
+    applyFilter();
+  }
+
+  function applyFilter() {
+    const q  = document.getElementById('zuw-search').value.trim().toLowerCase();
+    const au = document.getElementById('zuw-filter-auftrag').value;
+    const ha = document.getElementById('zuw-filter-halle').value;
+    const st = document.getElementById('zuw-filter-status').value;
+    const filtered = allData.filter(r => {
+      if (au && r.auftragsNr !== au) return false;
+      if (ha && r.halle      !== ha) return false;
+      if (st && r.status     !== st) return false;
+      if (q) {
+        const hay = [r.auftragsNr, r.produkt, r.mitarbeiter, r.arbeitsschritt, r.maschine]
+          .join(' ').toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+    renderTable(filtered);
+  }
+
+  /* ---------- Modal ---------- */
+  const modal      = document.getElementById('modal-zuw');
+  const modalTitle = document.getElementById('modal-zuw-title');
+
+  function getVal(id) { return (document.getElementById(id)?.value ?? '').trim(); }
+  function setVal(id, v) { const el = document.getElementById(id); if (el) el.value = v ?? ''; }
+
+  function openModal(title, record) {
+    modalTitle.textContent = title;
+    fillModalAuftragSelect(record?.auftragsNr || '');
+    setVal('zuw-produkt',       record?.produkt       || '');
+    setVal('zuw-status',        record?.status        || 'Offen');
+    setVal('zuw-halle',         record?.halle         || '');
+    setVal('zuw-linie',         record?.linie         || '');
+    setVal('zuw-arbeitsschritt',record?.arbeitsschritt || '');
+    setVal('zuw-maschine',      record?.maschine       || '');
+    setVal('zuw-von',           record?.von            || new Date().toISOString().slice(0, 10));
+    setVal('zuw-bis',           record?.bis            || '');
+    setVal('zuw-mitarbeiter',   record?.mitarbeiter    || '');
+    modal.classList.add('open');
+    document.getElementById('zuw-auftragsNr').focus();
+  }
+
+  function closeModal() { modal.classList.remove('open'); editId = null; }
+
+  function saveModal() {
+    const auftragsNr = getVal('zuw-auftragsNr');
+    if (!auftragsNr) { document.getElementById('zuw-auftragsNr').focus(); return; }
+    const data = {
+      auftragsNr,
+      produkt:        getVal('zuw-produkt'),
+      status:         getVal('zuw-status'),
+      halle:          getVal('zuw-halle'),
+      linie:          getVal('zuw-linie'),
+      arbeitsschritt: getVal('zuw-arbeitsschritt'),
+      maschine:       getVal('zuw-maschine'),
+      von:            getVal('zuw-von'),
+      bis:            getVal('zuw-bis'),
+      mitarbeiter:    getVal('zuw-mitarbeiter'),
+    };
+    if (editId) { store.update(editId, data); }
+    else        { store.add(data); }
+    closeModal();
+    reload();
+  }
+
+  /* Auftrags-Nr. gewählt → Produkt-Feld automatisch befüllen */
+  document.getElementById('zuw-auftragsNr').addEventListener('change', function () {
+    const opt = this.options[this.selectedIndex];
+    const bez = opt?.getAttribute('data-bezeichnung') || '';
+    if (bez) setVal('zuw-produkt', bez);
+  });
+
+  document.getElementById('btn-neue-zuweisung').addEventListener('click', () => {
+    editId = null; openModal('Neue Zuweisung anlegen', null);
+  });
+  document.getElementById('modal-zuw-close').addEventListener('click', closeModal);
+  document.getElementById('modal-zuw-cancel').addEventListener('click', closeModal);
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+  document.getElementById('modal-zuw-save').addEventListener('click', saveModal);
+
+  /* ---------- Tabellen-Klick ---------- */
+  document.getElementById('zuw-tbody').addEventListener('click', e => {
+    const row = e.target.closest('tr[data-id]');
+    if (!row) return;
+    const btn = e.target.closest('[data-action]');
+    if (btn) {
+      const id = btn.dataset.id;
+      if (btn.dataset.action === 'edit') {
+        editId = id; openModal('Zuweisung bearbeiten', store.getById(id));
+      } else if (btn.dataset.action === 'delete') {
+        openConfirm(id, btn.dataset.label);
+      }
+      return;
+    }
+    editId = row.dataset.id;
+    openModal('Zuweisung bearbeiten', store.getById(editId));
+  });
+
+  /* ---------- Filter ---------- */
+  document.getElementById('zuw-search').addEventListener('input', applyFilter);
+  document.getElementById('zuw-filter-auftrag').addEventListener('change', applyFilter);
+  document.getElementById('zuw-filter-halle').addEventListener('change', applyFilter);
+  document.getElementById('zuw-filter-status').addEventListener('change', applyFilter);
+
+  /* ---------- Bestätigungsdialog ---------- */
+  const confirmOverlay = document.getElementById('zuw-confirm-overlay');
+
+  function openConfirm(id, label) {
+    deleteId = id;
+    document.getElementById('zuw-confirm-msg').textContent =
+      `Soll die Zuweisung „${label}" wirklich endgültig gelöscht werden? Diese Aktion kann nicht rückgängig gemacht werden.`;
+    confirmOverlay.classList.add('open');
+  }
+  function closeConfirm() { confirmOverlay.classList.remove('open'); deleteId = null; }
+
+  document.getElementById('zuw-confirm-cancel').addEventListener('click', closeConfirm);
+  confirmOverlay.addEventListener('click', e => { if (e.target === confirmOverlay) closeConfirm(); });
+  document.getElementById('zuw-confirm-ok').addEventListener('click', () => {
+    if (deleteId) { store.remove(deleteId); closeConfirm(); reload(); }
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeModal(); closeConfirm(); }
+  });
+  modal.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') { e.preventDefault(); saveModal(); }
+  });
+
+  reload();
+})();
+</script>
 </main>
 </body>
 </html>
