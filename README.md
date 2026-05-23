@@ -1,4 +1,4 @@
-# AirLog
+# Aerodynamic Logistic
 
 A flexible logistics management web application — originally built around aircraft logistics, but designed to be adapted to any domain.
 
