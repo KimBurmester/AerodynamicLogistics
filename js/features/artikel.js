@@ -311,22 +311,103 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-/* ---- Artikeldetail-Modal ------------------------------------------------ */
+/* ---- Artikeldetail-Modal: Template-Hilfsfunktionen ---------------------- */
+
+const DETAIL_LBL_STYLE = 'width:22%;padding:6px 14px 6px 0;font-size:11.5px;font-weight:600;color:var(--text-secondary);vertical-align:top;white-space:nowrap';
+const DETAIL_VAL_STYLE = 'width:28%;padding:6px 20px 6px 0;font-size:13px;color:var(--text-primary);vertical-align:top';
+
+function formatDetailFeldwert(wert) {
+  if (wert == null || wert === '') return `<span style="color:var(--text-tertiary)">—</span>`;
+  return ADL.escHtml(String(wert));
+}
+
+function buildDetailZeile(paar1, paar2) {
+  const [label1, wert1] = paar1;
+  const [label2, wert2] = paar2 || [null, null];
+  const zweiteSpalte = label2 != null
+    ? `<td style="${DETAIL_LBL_STYLE}">${ADL.escHtml(label2)}</td><td style="${DETAIL_VAL_STYLE}">${formatDetailFeldwert(wert2)}</td>`
+    : '<td colspan="2"></td>';
+  return `<tr>
+    <td style="${DETAIL_LBL_STYLE}">${ADL.escHtml(label1)}</td>
+    <td style="${DETAIL_VAL_STYLE}">${formatDetailFeldwert(wert1)}</td>
+    ${zweiteSpalte}
+  </tr>`;
+}
+
+function buildDetailTabelle(feldPaare) {
+  const zeilen = [];
+  for (let i = 0; i < feldPaare.length; i += 2) {
+    zeilen.push(buildDetailZeile(feldPaare[i], feldPaare[i + 1]));
+  }
+  return `<table style="width:100%;border-collapse:collapse;margin-bottom:6px"><tbody>${zeilen.join('')}</tbody></table>`;
+}
+
+function buildDetailAbschnitt(titel, feldPaare) {
+  return `<p class="form-group-label">${titel}</p>${buildDetailTabelle(feldPaare)}`;
+}
+
+function buildArtikelDetailHtml(a) {
+  const teile = [
+    buildDetailAbschnitt('Stammdaten', [
+      ['Artikelbezeichnung', a.bezeichnung],    ['Artikelnummer',        a.artikelnummer],
+      ['Warengruppe',        a.warengruppe],     ['Artikelstatus',        a.status],
+      ['Einheit',            a.einheit],         ['Chargennummer',        a.charge],
+      ['Seriennummer (SN)',  a.seriennr],        ['Maschinennummer (MSN)', a.maschinennr],
+    ]),
+    buildDetailAbschnitt('Lagerbestand', [
+      ['Aktueller Bestand', a.bestand],      ['Mindestbestand', a.mindestbestand],
+      ['Meldebestand',      a.meldebestand], ['Lagerort',       a.lagerort],
+    ]),
+    buildDetailAbschnitt('Abmessungen &amp; Verpackung', [
+      ['Länge (cm)',         a.laenge],               ['Breite (cm)',       a.breite],
+      ['Höhe (cm)',          a.hoehe],                ['Gewicht (kg)',      a.gewicht],
+      ['Verpackungseinheit', a.verpackungseinheit],   ['Menge pro Einheit', a.mengeProEinheit],
+    ]),
+    buildDetailAbschnitt('Einkauf', [
+      ['Lieferant',           a.lieferant],  ['Einkaufspreis (€)',    a.einkaufspreis],
+      ['Mindestbestellmenge', a.mindestbestellmenge],
+    ]),
+    buildDetailAbschnitt('Verkauf', [
+      ['Verkaufspreis (€)', a.verkaufspreis], ['Steuersatz',       a.steuersatz],
+      ['Zolltarifnummer',   a.zolltarifnummer],
+    ]),
+    buildDetailAbschnitt('Versand &amp; Klassifikation', [
+      ['Gefahrgut',    a.gefahrgut],  ['Herkunftsland', a.herkunftsland],
+      ['Barcode (EAN)', a.barcode],
+    ]),
+  ];
+
+  if (a.beschreibung) {
+    teile.push(
+      `<p class="form-group-label">Beschreibung</p>` +
+      `<p style="font-size:13px;color:var(--text-primary);margin:0 0 16px;white-space:pre-wrap">${ADL.escHtml(a.beschreibung)}</p>`
+    );
+  }
+
+  teile.push(buildDetailAbschnitt('Metadaten', [
+    ['Interne Nr.', a.nr],                    ['Erstellt am', ADL.formatDate(a.erstelltAm)],
+    ['Geändert am', ADL.formatDate(a.geaendertAm)],
+  ]));
+
+  return teile.join('');
+}
+
+/* ---- Artikeldetail-Modal: Steuerung ------------------------------------- */
 
 (function initArtikelDetailModal() {
-  const overlay  = document.getElementById('modalArtikelDetail');
+  const overlay   = document.getElementById('modalArtikelDetail');
   if (!overlay) return;
-  const bodyEl   = document.getElementById('modalArtikelDetailBody');
-  const titleEl  = document.getElementById('modalArtikelDetailTitle');
+  const bodyEl    = document.getElementById('modalArtikelDetailBody');
+  const titleEl   = document.getElementById('modalArtikelDetailTitle');
   const editBtnEl = document.getElementById('modalArtikelDetailEdit');
-  let aktuelleId = null;
+  let aktuelleId  = null;
 
   function openDetail(id) {
-    const a = ADLStore.artikel.getById(id);
-    if (!a) return;
+    const artikel = ADLStore.artikel.getById(id);
+    if (!artikel) return;
     aktuelleId = id;
-    if (titleEl) titleEl.textContent = a.bezeichnung || 'Artikeldetails';
-    if (bodyEl)  bodyEl.innerHTML    = buildDetailHtml(a);
+    if (titleEl) titleEl.textContent = artikel.bezeichnung || 'Artikeldetails';
+    if (bodyEl)  bodyEl.innerHTML    = buildArtikelDetailHtml(artikel);
     overlay.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
@@ -337,76 +418,7 @@ document.addEventListener('DOMContentLoaded', () => {
     aktuelleId = null;
   }
 
-  function buildDetailHtml(a) {
-    const LBL = 'width:22%;padding:6px 14px 6px 0;font-size:11.5px;font-weight:600;color:var(--text-secondary);vertical-align:top;white-space:nowrap';
-    const VAL = 'width:28%;padding:6px 20px 6px 0;font-size:13px;color:var(--text-primary);vertical-align:top';
-    const v   = x => (x != null && x !== '') ? ADL.escHtml(String(x)) : `<span style="color:var(--text-tertiary)">—</span>`;
-
-    function tbl(paare) {
-      let zeilen = '';
-      for (let i = 0; i < paare.length; i += 2) {
-        const [l1, v1] = paare[i];
-        const [l2, v2] = paare[i + 1] || [null, null];
-        zeilen += `<tr>
-          <td style="${LBL}">${ADL.escHtml(l1)}</td><td style="${VAL}">${v(v1)}</td>
-          ${l2 != null ? `<td style="${LBL}">${ADL.escHtml(l2)}</td><td style="${VAL}">${v(v2)}</td>` : '<td colspan="2"></td>'}
-        </tr>`;
-      }
-      return `<table style="width:100%;border-collapse:collapse;margin-bottom:6px"><tbody>${zeilen}</tbody></table>`;
-    }
-
-    const abschnitt = (titel, paare) => `<p class="form-group-label">${titel}</p>${tbl(paare)}`;
-    const fmtDate   = iso => { const d = new Date(iso); return isNaN(d) ? null : ADL.formatDate(iso); };
-
-    return (
-      abschnitt('Stammdaten', [
-        ['Artikelbezeichnung', a.bezeichnung],  ['Artikelnummer', a.artikelnummer],
-        ['Warengruppe', a.warengruppe],          ['Artikelstatus', a.status],
-        ['Einheit', a.einheit],                  ['Chargennummer', a.charge],
-        ['Seriennummer (SN)', a.seriennr],       ['Maschinennummer (MSN)', a.maschinennr],
-      ]) +
-      abschnitt('Lagerbestand', [
-        ['Aktueller Bestand', a.bestand],  ['Mindestbestand', a.mindestbestand],
-        ['Meldebestand', a.meldebestand],  ['Lagerort', a.lagerort],
-      ]) +
-      abschnitt('Abmessungen &amp; Verpackung', [
-        ['Länge (cm)', a.laenge],  ['Breite (cm)', a.breite],
-        ['Höhe (cm)', a.hoehe],    ['Gewicht (kg)', a.gewicht],
-        ['Verpackungseinheit', a.verpackungseinheit], ['Menge pro Einheit', a.mengeProEinheit],
-      ]) +
-      abschnitt('Einkauf', [
-        ['Lieferant', a.lieferant],  ['Einkaufspreis (€)', a.einkaufspreis],
-        ['Mindestbestellmenge', a.mindestbestellmenge],
-      ]) +
-      abschnitt('Verkauf', [
-        ['Verkaufspreis (€)', a.verkaufspreis],  ['Steuersatz', a.steuersatz],
-        ['Zolltarifnummer', a.zolltarifnummer],
-      ]) +
-      abschnitt('Versand &amp; Klassifikation', [
-        ['Gefahrgut', a.gefahrgut],  ['Herkunftsland', a.herkunftsland],
-        ['Barcode (EAN)', a.barcode],
-      ]) +
-      (a.beschreibung
-        ? `<p class="form-group-label">Beschreibung</p><p style="font-size:13px;color:var(--text-primary);margin:0 0 16px;white-space:pre-wrap">${ADL.escHtml(a.beschreibung)}</p>`
-        : '') +
-      abschnitt('Metadaten', [
-        ['Interne Nr.', a.nr],  ['Erstellt am', fmtDate(a.erstelltAm)],
-        ['Geändert am', fmtDate(a.geaendertAm)],
-      ])
-    );
-  }
-
-  document.getElementById('modalArtikelDetailClose')?.addEventListener('click', closeDetail);
-  document.getElementById('modalArtikelDetailSchliessen')?.addEventListener('click', closeDetail);
-  overlay.addEventListener('click', e => { if (e.target === overlay) closeDetail(); });
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && overlay.classList.contains('open')) closeDetail();
-  });
-
-  editBtnEl?.addEventListener('click', () => {
-    if (!aktuelleId) return;
-    const id = aktuelleId;
-    closeDetail();
+  function navigiereZuArtikelBearbeitung(id) {
     const mc = document.querySelector('.main-content');
     if (!mc) return;
     fetch('sites/Artikel.html')
@@ -420,13 +432,24 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.sidebar-item').forEach(i =>
       i.classList.toggle('active', i.getAttribute('data-page') === 'sites/Artikel.html')
     );
-  });
+  }
 
+  document.getElementById('modalArtikelDetailClose')?.addEventListener('click', closeDetail);
+  document.getElementById('modalArtikelDetailSchliessen')?.addEventListener('click', closeDetail);
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeDetail(); });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && overlay.classList.contains('open')) closeDetail();
+  });
+  editBtnEl?.addEventListener('click', () => {
+    if (!aktuelleId) return;
+    const id = aktuelleId;
+    closeDetail();
+    navigiereZuArtikelBearbeitung(id);
+  });
   document.addEventListener('click', e => {
     if (e.target.closest('button')) return;
     const tr = e.target.closest('tr[data-artikel-id]');
-    if (!tr) return;
-    openDetail(tr.dataset.artikelId);
+    if (tr) openDetail(tr.dataset.artikelId);
   });
 })();
 
