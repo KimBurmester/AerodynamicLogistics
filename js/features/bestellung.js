@@ -69,21 +69,66 @@ document.addEventListener('click', e => {
 
 /* ---- Tabellen-Renderer: Bestelldatenbank -------------------------------- */
 
-ADL.renderBestelldatenbank = function (tbody) {
-  const bestellungen = ADLStore.bestellungen.getAll();
-  tbody.innerHTML = bestellungen.length
-    ? bestellungen.map(r => `<tr>
-        <td class="td-mono">${ADL.escHtml(r.nr)}</td>
-        <td>${ADL.escHtml(r.lieferant)}</td>
-        <td class="td-mono">${ADL.formatDate(r.bestelldatum)}</td>
-        <td class="td-mono">${ADL.formatDate(r.lieferdatum)}</td>
-        <td class="td-mono">${ADL.formatEuro(r.gesamtwert)}</td>
-        <td>${r.positionen?.length || 0} Pos.</td>
-        <td>${ADL.badge(r.status)}</td>
-        <td style="white-space:nowrap">
-          ${ADL.editBtn('sites/Bestellung.html')}
-          ${ADL.deleteBtn('bestellungen', r.id, r.nr)}
-        </td>
-      </tr>`).join('')
+const BESTELLUNGEN_PRO_SEITE = 8;
+
+ADL.renderBestelldatenbank = function (tbody, page = 1) {
+  const alleBestellungen = ADLStore.bestellungen.getAll();
+  const gesamt           = alleBestellungen.length;
+  const seitenAnzahl     = Math.max(1, Math.ceil(gesamt / BESTELLUNGEN_PRO_SEITE));
+  page = Math.min(Math.max(1, page), seitenAnzahl);
+  const seitenSlice = alleBestellungen.slice((page - 1) * BESTELLUNGEN_PRO_SEITE, page * BESTELLUNGEN_PRO_SEITE);
+
+  tbody.innerHTML = seitenSlice.length
+    ? seitenSlice.map(buildBestellungZeile).join('')
     : ADL.emptyRow(8, 'Keine Bestellungen gespeichert');
+
+  const root = tbody.closest('.container') || tbody.closest('section');
+  updateBestellungKpis(alleBestellungen, root);
+  updateBestellungPaginationInfo(root, page, gesamt);
+
+  ADL.buildPagination({
+    page,
+    totalPages:   seitenAnzahl,
+    btnsEl:       root?.querySelector('.pagination-buttons'),
+    prevAttr:     'data-bst-prev',
+    nextAttr:     'data-bst-next',
+    pageAttr:     'data-bst',
+    onPageChange: p => ADL.renderBestelldatenbank(tbody, p),
+  });
 };
+
+function buildBestellungZeile(r) {
+  return `<tr>
+    <td class="td-mono">${ADL.escHtml(r.nr)}</td>
+    <td>${ADL.escHtml(r.lieferant)}</td>
+    <td class="td-mono">${ADL.formatDate(r.bestelldatum)}</td>
+    <td class="td-mono">${ADL.formatDate(r.lieferdatum)}</td>
+    <td class="td-mono">${ADL.formatEuro(r.gesamtwert)}</td>
+    <td>${r.positionen?.length || 0} Pos.</td>
+    <td>${ADL.badge(r.status)}</td>
+    <td style="white-space:nowrap">
+      ${ADL.editBtn('sites/Bestellung.html')}
+      ${ADL.deleteBtn('bestellungen', r.id, r.nr)}
+    </td>
+  </tr>`;
+}
+
+function updateBestellungKpis(alleBestellungen, root) {
+  const offen         = alleBestellungen.filter(r => r.status === 'Offen').length;
+  const inLieferung   = alleBestellungen.filter(r => r.status === 'In Lieferung').length;
+  const abgeschlossen = alleBestellungen.filter(r => r.status === 'Abgeschlossen').length;
+  const set = (id, v) => { const el = root?.querySelector('#' + id); if (el) el.textContent = v; };
+  set('kpi-bst-gesamt',       alleBestellungen.length.toLocaleString('de-DE'));
+  set('kpi-bst-offen',        offen.toLocaleString('de-DE'));
+  set('kpi-bst-lieferung',    inLieferung.toLocaleString('de-DE'));
+  set('kpi-bst-abgeschlossen', abgeschlossen.toLocaleString('de-DE'));
+}
+
+function updateBestellungPaginationInfo(root, page, gesamt) {
+  const infoEl = root?.querySelector('.pagination-info');
+  if (!infoEl) return;
+  if (gesamt === 0) { infoEl.textContent = 'Keine Bestellungen'; return; }
+  const from = (page - 1) * BESTELLUNGEN_PRO_SEITE + 1;
+  const to   = Math.min(page * BESTELLUNGEN_PRO_SEITE, gesamt);
+  infoEl.textContent = `Zeigt ${from}–${to} von ${gesamt} ${gesamt === 1 ? 'Bestellung' : 'Bestellungen'}`;
+}

@@ -98,26 +98,71 @@ document.addEventListener('click', e => {
 
 /* ---- Tabellen-Renderer: Wartungsdatenbank ------------------------------- */
 
-ADL.renderWartungsdatenbank = function (tbody) {
-  const wartungsauftraege = ADLStore.wartungsauftraege.getAll();
-  tbody.innerHTML = wartungsauftraege.length
-    ? wartungsauftraege.map(r => `<tr>
-        <td class="td-mono">${ADL.escHtml(r.nr)}</td>
-        <td>${ADL.escHtml(r.geraet || '—')}</td>
-        <td>${ADL.escHtml(r.kategorie || '—')}</td>
-        <td>${ADL.escHtml(r.halle || '—')}</td>
-        <td>${ADL.escHtml(r.wartungsart || '—')}</td>
-        <td>${ADL.badge(r.prioritaet || 'Normal')}</td>
-        <td class="td-mono">${ADL.formatDate(r.datum)}</td>
-        <td>${ADL.escHtml(r.techniker || '—')}</td>
-        <td>${ADL.badge(r.status)}</td>
-        <td style="white-space:nowrap">
-          ${ADL.editBtn('sites/Instandhaltung.html')}
-          ${ADL.deleteBtn('wartungsauftraege', r.id, r.nr)}
-        </td>
-      </tr>`).join('')
+const WARTUNGEN_PRO_SEITE = 8;
+
+ADL.renderWartungsdatenbank = function (tbody, page = 1) {
+  const alleAuftraege = ADLStore.wartungsauftraege.getAll();
+  const gesamt        = alleAuftraege.length;
+  const seitenAnzahl  = Math.max(1, Math.ceil(gesamt / WARTUNGEN_PRO_SEITE));
+  page = Math.min(Math.max(1, page), seitenAnzahl);
+  const seitenSlice = alleAuftraege.slice((page - 1) * WARTUNGEN_PRO_SEITE, page * WARTUNGEN_PRO_SEITE);
+
+  tbody.innerHTML = seitenSlice.length
+    ? seitenSlice.map(buildWartungZeile).join('')
     : ADL.emptyRow(10, 'Keine Wartungsaufträge gespeichert');
+
+  const root = tbody.closest('.container') || tbody.closest('section');
+  updateWartungKpis(alleAuftraege, root);
+  updateWartungPaginationInfo(root, page, gesamt);
+
+  ADL.buildPagination({
+    page,
+    totalPages:   seitenAnzahl,
+    btnsEl:       root?.querySelector('.pagination-buttons'),
+    prevAttr:     'data-wt-prev',
+    nextAttr:     'data-wt-next',
+    pageAttr:     'data-wt',
+    onPageChange: p => ADL.renderWartungsdatenbank(tbody, p),
+  });
 };
+
+function buildWartungZeile(r) {
+  return `<tr>
+    <td class="td-mono">${ADL.escHtml(r.nr)}</td>
+    <td>${ADL.escHtml(r.geraet || '—')}</td>
+    <td>${ADL.escHtml(r.geraetekategorie || r.kategorie || '—')}</td>
+    <td>${ADL.escHtml(r.halle || '—')}</td>
+    <td>${ADL.escHtml(r.wartungsart || '—')}</td>
+    <td>${ADL.badge(r.prioritaet || 'Normal')}</td>
+    <td class="td-mono">${ADL.formatDate(r.datum)}</td>
+    <td>${ADL.escHtml(r.techniker || '—')}</td>
+    <td>${ADL.badge(r.status)}</td>
+    <td style="white-space:nowrap">
+      ${ADL.editBtn('sites/Instandhaltung.html')}
+      ${ADL.deleteBtn('wartungsauftraege', r.id, r.nr)}
+    </td>
+  </tr>`;
+}
+
+function updateWartungKpis(alleAuftraege, root) {
+  const offenGeplant  = alleAuftraege.filter(r => r.status === 'Offen' || r.status === 'Geplant').length;
+  const inArbeit      = alleAuftraege.filter(r => r.status === 'In Arbeit').length;
+  const abgeschlossen = alleAuftraege.filter(r => r.status === 'Abgeschlossen').length;
+  const set = (id, v) => { const el = root?.querySelector('#' + id); if (el) el.textContent = v; };
+  set('kpi-wt-gesamt',       alleAuftraege.length.toLocaleString('de-DE'));
+  set('kpi-wt-offen',        offenGeplant.toLocaleString('de-DE'));
+  set('kpi-wt-arbeit',       inArbeit.toLocaleString('de-DE'));
+  set('kpi-wt-abgeschlossen', abgeschlossen.toLocaleString('de-DE'));
+}
+
+function updateWartungPaginationInfo(root, page, gesamt) {
+  const infoEl = root?.querySelector('.pagination-info');
+  if (!infoEl) return;
+  if (gesamt === 0) { infoEl.textContent = 'Keine Wartungsaufträge'; return; }
+  const from = (page - 1) * WARTUNGEN_PRO_SEITE + 1;
+  const to   = Math.min(page * WARTUNGEN_PRO_SEITE, gesamt);
+  infoEl.textContent = `Zeigt ${from}–${to} von ${gesamt} ${gesamt === 1 ? 'Wartungsauftrag' : 'Wartungsaufträgen'}`;
+}
 
 /* ---- Tabellen-Renderer: Geräteübersicht --------------------------------- */
 

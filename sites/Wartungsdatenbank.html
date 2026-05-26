@@ -23,19 +23,19 @@
     <div class="grid-4 kpi-row">
         <div class="metric-card">
             <div class="metric-label">Gesamtaufträge</div>
-            <div class="metric-value">214</div>
+            <div class="metric-value" id="kpi-wt-gesamt">—</div>
         </div>
         <div class="metric-card">
             <div class="metric-label">Offen / Geplant</div>
-            <div class="metric-value metric-value-info">18</div>
+            <div class="metric-value metric-value-info" id="kpi-wt-offen">—</div>
         </div>
         <div class="metric-card">
             <div class="metric-label">In Arbeit</div>
-            <div class="metric-value metric-value-warning">5</div>
+            <div class="metric-value metric-value-warning" id="kpi-wt-arbeit">—</div>
         </div>
         <div class="metric-card">
             <div class="metric-label">Abgeschlossen</div>
-            <div class="metric-value metric-value-success">191</div>
+            <div class="metric-value metric-value-success" id="kpi-wt-abgeschlossen">—</div>
         </div>
     </div>
 
@@ -107,123 +107,14 @@
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td class="td-mono">IH-2026-0001</td>
-                    <td>Hallenkran HK-500</td>
-                    <td>Fördertechnik</td>
-                    <td>Halle 1</td>
-                    <td>Wartung (präventiv)</td>
-                    <td><span class="badge badge-info"><span class="dot"></span>Normal</span></td>
-                    <td class="td-mono">10.01.2026</td>
-                    <td>T. Weber</td>
-                    <td><span class="badge badge-success"><span class="dot"></span>Abgeschlossen</span></td>
-                    <td><button class="btn btn-sm btn-ghost" data-navigate="sites/Instandhaltung.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-                <tr>
-                    <td class="td-mono">IH-2026-0002</td>
-                    <td>Rolltor Nord</td>
-                    <td>Halleninfrastruktur</td>
-                    <td>Halle 1</td>
-                    <td>Reparatur (korrektiv)</td>
-                    <td><span class="badge badge-warning"><span class="dot"></span>Hoch</span></td>
-                    <td class="td-mono">12.01.2026</td>
-                    <td>M. Koch</td>
-                    <td><span class="badge badge-success"><span class="dot"></span>Abgeschlossen</span></td>
-                    <td><button class="btn btn-sm btn-ghost" data-navigate="sites/Instandhaltung.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-                <tr>
-                    <td class="td-mono">IH-2026-0003</td>
-                    <td>Stromverteiler HV-1A</td>
-                    <td>Elektrotechnik</td>
-                    <td>Halle 1</td>
-                    <td>Prüfung (gesetzlich)</td>
-                    <td><span class="badge badge-warning"><span class="dot"></span>Hoch</span></td>
-                    <td class="td-mono">15.01.2026</td>
-                    <td>R. Schulz</td>
-                    <td><span class="badge badge-warning"><span class="dot"></span>In Arbeit</span></td>
-                    <td><button class="btn btn-sm btn-ghost" data-navigate="sites/Instandhaltung.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-                <tr>
-                    <td class="td-mono">IH-2026-0004</td>
-                    <td>Gabelstapler GS-25</td>
-                    <td>Flurförderfahrzeuge</td>
-                    <td>Außengelände</td>
-                    <td>Reparatur (korrektiv)</td>
-                    <td><span class="badge badge-danger"><span class="dot"></span>Dringend</span></td>
-                    <td class="td-mono">18.01.2026</td>
-                    <td>T. Weber</td>
-                    <td><span class="badge badge-info"><span class="dot"></span>Offen</span></td>
-                    <td><button class="btn btn-sm btn-ghost" data-navigate="sites/Instandhaltung.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-                <tr>
-                    <td class="td-mono">IH-2026-0005</td>
-                    <td>CNC-Fräsmaschine VF-4</td>
-                    <td>Produktionsmaschinen</td>
-                    <td>Halle 3</td>
-                    <td>Wartung (präventiv)</td>
-                    <td><span class="badge badge-info"><span class="dot"></span>Normal</span></td>
-                    <td class="td-mono">20.01.2026</td>
-                    <td>K. Braun</td>
-                    <td><span class="badge badge-info"><span class="dot"></span>Geplant</span></td>
-                    <td><button class="btn btn-sm btn-ghost" data-navigate="sites/Instandhaltung.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-                <tr>
-                    <td class="td-mono">IH-2026-0006</td>
-                    <td>Kompressor KA-45</td>
-                    <td>Druckluft &amp; Hydraulik</td>
-                    <td>Halle 2</td>
-                    <td>Inspektion</td>
-                    <td><span class="badge badge-info"><span class="dot"></span>Normal</span></td>
-                    <td class="td-mono">22.01.2026</td>
-                    <td>M. Koch</td>
-                    <td><span class="badge badge-info"><span class="dot"></span>Geplant</span></td>
-                    <td><button class="btn btn-sm btn-ghost" data-navigate="sites/Instandhaltung.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-                <tr>
-                    <td class="td-mono">IH-2026-0007</td>
-                    <td>Elektrostapler ES-30</td>
-                    <td>Flurförderfahrzeuge</td>
-                    <td>Halle 2</td>
-                    <td>Wartung (präventiv)</td>
-                    <td><span class="badge badge-secondary"><span class="dot"></span>Niedrig</span></td>
-                    <td class="td-mono">25.01.2026</td>
-                    <td>R. Schulz</td>
-                    <td><span class="badge badge-info"><span class="dot"></span>Offen</span></td>
-                    <td><button class="btn btn-sm btn-ghost" data-navigate="sites/Instandhaltung.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-                <tr>
-                    <td class="td-mono">IH-2026-0008</td>
-                    <td>Brückenkran BK-800</td>
-                    <td>Fördertechnik</td>
-                    <td>Halle 3</td>
-                    <td>Inspektion</td>
-                    <td><span class="badge badge-warning"><span class="dot"></span>Hoch</span></td>
-                    <td class="td-mono">02.02.2026</td>
-                    <td>T. Weber</td>
-                    <td><span class="badge badge-warning"><span class="dot"></span>In Arbeit</span></td>
-                    <td><button class="btn btn-sm btn-ghost" data-navigate="sites/Instandhaltung.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-            </tbody>
+            <tbody></tbody>
         </table>
     </div>
 
     <!-- Pagination -->
     <div class="pagination-row">
-        <span class="pagination-info">Zeigt 1–8 von 214 Wartungsaufträgen</span>
-        <div class="pagination-buttons">
-            <button class="btn btn-sm" disabled>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-            </button>
-            <button class="btn btn-sm btn-primary">1</button>
-            <button class="btn btn-sm">2</button>
-            <button class="btn btn-sm">3</button>
-            <span class="pagination-ellipsis">…</span>
-            <button class="btn btn-sm">27</button>
-            <button class="btn btn-sm">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-            </button>
-        </div>
+        <span class="pagination-info"></span>
+        <div class="pagination-buttons"></div>
     </div>
 
 </section>

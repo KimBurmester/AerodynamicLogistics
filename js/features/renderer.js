@@ -77,7 +77,9 @@ function zeigeLoeschBestaetigung(btn) {
     color:  btn.style.color,
     bg:     btn.style.background,
     border: btn.style.borderColor,
+    width:  btn.style.width,
   };
+  btn.style.width       = btn.offsetWidth + 'px';
   btn.innerHTML         = '<span style="font-size:10px;font-weight:700;letter-spacing:.3px">SICHER?</span>';
   btn.style.color       = 'var(--danger-text)';
   btn.style.background  = 'var(--danger-bg)';
@@ -89,6 +91,7 @@ function zeigeLoeschBestaetigung(btn) {
     btn.style.color       = gespeichert.color;
     btn.style.background  = gespeichert.bg;
     btn.style.borderColor = gespeichert.border;
+    btn.style.width       = gespeichert.width;
   }, 3000);
 }
 

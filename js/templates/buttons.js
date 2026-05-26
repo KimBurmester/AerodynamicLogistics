@@ -16,7 +16,7 @@ ADL.editBtn = function (page, id) {
 };
 
 ADL.deleteBtn = function (store, id, label) {
-  return `<button class="btn btn-sm btn-ghost" style="color:var(--danger-text)"
+  return `<button class="btn btn-sm btn-ghost" style="color:var(--danger-text);padding:7px 14px"
     data-delete-id="${ADL.escHtml(String(id))}"
     data-delete-store="${ADL.escHtml(store)}"
     data-delete-label="${ADL.escHtml(String(label))}">${ADL.DELETE_SVG}</button>`;
