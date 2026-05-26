@@ -66,6 +66,16 @@
     }
   }
 
+  /* ---- localStorage-Reset bei Versions-Wechsel ---------------------- */
+
+  const STORE_VERSION = '3';
+  if (localStorage.getItem('adl_version') !== STORE_VERSION) {
+    Object.keys(localStorage)
+      .filter(k => k.startsWith('adl_'))
+      .forEach(k => localStorage.removeItem(k));
+    localStorage.setItem('adl_version', STORE_VERSION);
+  }
+
   /* ---- Entity-Stores ------------------------------------------------ */
 
   const ADLStore = {
