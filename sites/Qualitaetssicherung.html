@@ -22,21 +22,20 @@
     <!-- KPIs -->
     <div class="grid-4 kpi-row">
         <div class="metric-card">
-            <div class="metric-label">Prüfungen heute</div>
-            <div class="metric-value">23</div>
-            <div class="metric-trend up">+4 vs. gestern</div>
+            <div class="metric-label">Prüfungen gesamt</div>
+            <div class="metric-value" id="kpi-qs-gesamt">0</div>
         </div>
         <div class="metric-card">
             <div class="metric-label">Bestanden (i.O.)</div>
-            <div class="metric-value metric-value-success">18</div>
+            <div class="metric-value metric-value-success" id="kpi-qs-bestanden">0</div>
         </div>
         <div class="metric-card">
             <div class="metric-label">Nacharbeit erforderlich</div>
-            <div class="metric-value metric-value-warning">3</div>
+            <div class="metric-value metric-value-warning" id="kpi-qs-nacharbeit">0</div>
         </div>
         <div class="metric-card">
-            <div class="metric-label">Gesperrt (n.i.O.)</div>
-            <div class="metric-value metric-value-danger">2</div>
+            <div class="metric-label">Nicht bestanden (n.i.O.)</div>
+            <div class="metric-value metric-value-danger" id="kpi-qs-niO">0</div>
         </div>
     </div>
 
@@ -44,10 +43,10 @@
     <div class="filter-bar">
         <div class="search-field">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" placeholder="Prüfber.-Nr., Artikel oder Seriennr. suchen…" />
+            <input type="text" id="qs-search" placeholder="Prüfber.-Nr., Artikel oder Seriennr. suchen…" />
         </div>
         <div class="field min-w-170">
-            <select>
+            <select id="qs-filter-auftrag">
                 <option value="">Alle Produktionsaufträge</option>
                 <option>PRD-2026-0001 – Hydraulikeinheit HE-400</option>
                 <option>PRD-2026-0002 – Drucksensorbaugruppe DS-200</option>
@@ -60,7 +59,7 @@
             </select>
         </div>
         <div class="field min-w-160">
-            <select>
+            <select id="qs-filter-pruefart">
                 <option value="">Alle Prüfarten</option>
                 <option>Sichtprüfung</option>
                 <option>Maßkontrolle</option>
@@ -72,11 +71,11 @@
             </select>
         </div>
         <div class="field min-w-150">
-            <select>
+            <select id="qs-filter-ergebnis">
                 <option value="">Alle Ergebnisse</option>
-                <option>i.O.</option>
-                <option>Nacharbeit erforderlich</option>
-                <option>n.i.O.</option>
+                <option value="i.O. (in Ordnung)">i.O. (in Ordnung)</option>
+                <option value="Nacharbeit erforderlich">Nacharbeit erforderlich</option>
+                <option value="n.i.O. (nicht in Ordnung)">n.i.O. (nicht in Ordnung)</option>
             </select>
         </div>
     </div>
@@ -97,107 +96,7 @@
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td class="td-mono">QS-2026-0001</td>
-                    <td>Hydraulikschlauch DN16</td>
-                    <td class="td-mono">SN-HSL-240001</td>
-                    <td>Drucktest</td>
-                    <td class="td-mono">15.05.2026</td>
-                    <td>K. Burmester</td>
-                    <td><span class="badge badge-success"><span class="dot"></span>i.O.</span></td>
-                    <td>–</td>
-                    <td><button class="btn btn-sm btn-ghost" data-action="neuer-pruefbericht"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-                <tr>
-                    <td class="td-mono">QS-2026-0002</td>
-                    <td>Hydraulikschlauch DN16</td>
-                    <td class="td-mono">SN-HSL-240002</td>
-                    <td>Sichtprüfung</td>
-                    <td class="td-mono">15.05.2026</td>
-                    <td>K. Burmester</td>
-                    <td><span class="badge badge-success"><span class="dot"></span>i.O.</span></td>
-                    <td>–</td>
-                    <td><button class="btn btn-sm btn-ghost" data-action="neuer-pruefbericht"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-                <tr>
-                    <td class="td-mono">QS-2026-0003</td>
-                    <td>Drucksensor 0–400 bar</td>
-                    <td class="td-mono">SN-DSR-220831</td>
-                    <td>Funktionstest</td>
-                    <td class="td-mono">15.05.2026</td>
-                    <td>M. Schulz</td>
-                    <td><span class="badge badge-danger"><span class="dot"></span>n.i.O.</span></td>
-                    <td>8D-Report initiiert</td>
-                    <td><button class="btn btn-sm btn-ghost" data-action="neuer-pruefbericht"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-                <tr>
-                    <td class="td-mono">QS-2026-0004</td>
-                    <td>Kugelventil ½"</td>
-                    <td class="td-mono">SN-KVL-260003</td>
-                    <td>Maßkontrolle</td>
-                    <td class="td-mono">15.05.2026</td>
-                    <td>J. Weber</td>
-                    <td><span class="badge badge-warning"><span class="dot"></span>Nacharbeit</span></td>
-                    <td>Nacharbeit angeordnet</td>
-                    <td><button class="btn btn-sm btn-ghost" data-action="neuer-pruefbericht"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-                <tr>
-                    <td class="td-mono">QS-2026-0005</td>
-                    <td>O-Ring 50×3 NBR</td>
-                    <td class="td-mono">CH-NBR-2026-018</td>
-                    <td>Sichtprüfung</td>
-                    <td class="td-mono">15.05.2026</td>
-                    <td>M. Schulz</td>
-                    <td><span class="badge badge-success"><span class="dot"></span>i.O.</span></td>
-                    <td>–</td>
-                    <td><button class="btn btn-sm btn-ghost" data-action="neuer-pruefbericht"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-                <tr>
-                    <td class="td-mono">QS-2026-0006</td>
-                    <td>Pneumatikzylinder Ø50</td>
-                    <td class="td-mono">SN-PNZ-190047</td>
-                    <td>Funktionstest</td>
-                    <td class="td-mono">15.05.2026</td>
-                    <td>K. Burmester</td>
-                    <td><span class="badge badge-success"><span class="dot"></span>i.O.</span></td>
-                    <td>–</td>
-                    <td><button class="btn btn-sm btn-ghost" data-action="neuer-pruefbericht"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-                <tr>
-                    <td class="td-mono">QS-2026-0007</td>
-                    <td>Hydrauliköl HLP 46</td>
-                    <td class="td-mono">CH-OEL-2026-011</td>
-                    <td>Laboranalyse</td>
-                    <td class="td-mono">15.05.2026</td>
-                    <td>J. Weber</td>
-                    <td><span class="badge badge-success"><span class="dot"></span>i.O.</span></td>
-                    <td>–</td>
-                    <td><button class="btn btn-sm btn-ghost" data-action="neuer-pruefbericht"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-                <tr>
-                    <td class="td-mono">QS-2026-0008</td>
-                    <td>Steuerventil SV-300</td>
-                    <td class="td-mono">SN-SVL-260001</td>
-                    <td>Drucktest</td>
-                    <td class="td-mono">15.05.2026</td>
-                    <td>M. Schulz</td>
-                    <td><span class="badge badge-danger"><span class="dot"></span>n.i.O.</span></td>
-                    <td>Reklamation erfasst</td>
-                    <td><button class="btn btn-sm btn-ghost" data-action="neuer-pruefbericht"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-                <tr>
-                    <td class="td-mono">QS-2026-0009</td>
-                    <td>Druckbehälter DB-60</td>
-                    <td class="td-mono">SN-DBH-260001</td>
-                    <td>Schweißnahtprüfung</td>
-                    <td class="td-mono">15.05.2026</td>
-                    <td>K. Burmester</td>
-                    <td><span class="badge badge-warning"><span class="dot"></span>Nacharbeit</span></td>
-                    <td>Nachschweißen angeordnet</td>
-                    <td><button class="btn btn-sm btn-ghost" data-action="neuer-pruefbericht"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></td>
-                </tr>
-            </tbody>
+            <tbody></tbody>
         </table>
     </div>
 
@@ -211,18 +110,8 @@
 
     <!-- Pagination -->
     <div class="pagination-row">
-        <span class="pagination-info">Zeigt 1–9 von 23 Prüfberichten</span>
-        <div class="pagination-buttons">
-            <button class="btn btn-sm" disabled>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-            </button>
-            <button class="btn btn-sm btn-primary">1</button>
-            <button class="btn btn-sm">2</button>
-            <button class="btn btn-sm">3</button>
-            <button class="btn btn-sm">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-            </button>
-        </div>
+        <span class="pagination-info"></span>
+        <div class="pagination-buttons"></div>
     </div>
 
 </section>

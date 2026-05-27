@@ -24,6 +24,7 @@ const ROOT_RENDERER_MAP = {
   'Artikelverwaltung':                    root  => ADL.renderArtikelVerwaltung(root),
   'Produktionsdatenbank':                 root  => ADL.renderProduktionsdatenbank(root),
   'Produkt- und Fertigungsinformationen': root  => ADL.renderProduktionForm(root),
+  'Qualitätssicherung':                   root  => ADL.renderQualitaetssicherung(root),
 };
 
 /* ---- tryRender: ermittelt welcher Renderer aktiv ist ------------------- */

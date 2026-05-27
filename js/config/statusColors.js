@@ -52,6 +52,11 @@ ADL.STATUS_COLORS = {
   'Kritisch':               'danger',
   'Verzögert':              'danger',
 
+  // QS-Ergebnisse
+  'i.O. (in Ordnung)':         'success',
+  'Nacharbeit erforderlich':    'warning',
+  'n.i.O. (nicht in Ordnung)': 'danger',
+
   // Sonstige
   'Umlagerung':             'purple',
   'Planung':                'purple',

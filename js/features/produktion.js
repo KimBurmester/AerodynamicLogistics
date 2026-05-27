@@ -273,32 +273,4 @@ document.addEventListener('DOMContentLoaded', () => {
     ADL.toast(`Position „${bezeichnung}" hinzugefügt.`);
   });
 
-  /* Neuer Prüfbericht (QS) */
-  document.getElementById('modalNeuerPruefberichtSave')?.addEventListener('click', () => {
-    const artikel = ADL.getInputValue('qm-artikel');
-    if (!artikel) { ADL.toast('Bitte Artikel angeben.', 'danger'); return; }
-    ADLStore.qualitaetspruefungen.add({
-      nr:                 ADLStore.qualitaetspruefungen.nextNr('QS'),
-      artikel,
-      artikelnr:          ADL.getInputValue('qm-artikelnr'),
-      seriennr:           ADL.getInputValue('qm-seriennr'),
-      auftrag:            ADL.getInputValue('qm-auftrag'),
-      datum:              ADL.getInputValue('qm-datum'),
-      pruefer:            ADL.getInputValue('qm-pruefer'),
-      pruefart:           ADL.getInputValue('qm-pruefart'),
-      pruefmittel:        ADL.getInputValue('qm-pruefmittel'),
-      pruefmittelnr:      ADL.getInputValue('qm-pruefmittelnr'),
-      kalibrierung:       ADL.getInputValue('qm-kalibrierung'),
-      ergebnis:           ADL.getInputValue('qm-ergebnis'),
-      fehlerklasse:       ADL.getInputValue('qm-fehlerklasse'),
-      abweichung:         ADL.getInputValue('qm-abweichung'),
-      fehlerbeschreibung: ADL.getInputValue('qm-fehlerbeschreibung'),
-      massnahme:          ADL.getInputValue('qm-massnahme'),
-      verantwortlicher:   ADL.getInputValue('qm-verantwortlicher'),
-      faelligkeit:        ADL.getInputValue('qm-faelligkeit'),
-      referenz:           ADL.getInputValue('qm-referenz'),
-      bemerkungen:        ADL.getInputValue('qm-bemerkungen'),
-    });
-    ADL.toast(`Prüfbericht für „${artikel}" gespeichert.`);
-  });
 });
