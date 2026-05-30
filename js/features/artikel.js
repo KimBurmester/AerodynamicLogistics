@@ -111,7 +111,7 @@ ADL.renderArtikeldatenbank = function (tbody, page = 1) {
 
   tbody.innerHTML = seitenSlice.length
     ? seitenSlice.map(buildArtikelZeile).join('')
-    : ADL.emptyRow(9, 'Keine Artikel gespeichert');
+    : ADL.emptyRow(10, 'Keine Artikel gespeichert');
 
   const root = tbody.closest('.container') || tbody.closest('section');
   updateArtikelKpis(alleArtikel, root);
@@ -126,6 +126,8 @@ ADL.renderArtikeldatenbank = function (tbody, page = 1) {
     pageAttr:  'data-pg',
     onPageChange: p => ADL.renderArtikeldatenbank(tbody, p),
   });
+
+  ADL.generateArtikelQrCodes?.(tbody, seitenSlice);
 };
 
 function buildArtikelZeile(r) {
@@ -138,6 +140,7 @@ function buildArtikelZeile(r) {
     <td>${ADL.escHtml(String(r.mindestbestand !== '' ? r.mindestbestand : '—'))}</td>
     <td>${ADL.escHtml(r.lagerort || '—')}</td>
     <td>${ADL.badge(r.status || 'Aktiv')}</td>
+    <td class="qr-cell" data-qr-id="${ADL.escHtml(r.id)}" style="padding:6px;text-align:center;vertical-align:middle" title="QR-Code vergrößern"></td>
     <td style="white-space:nowrap">
       <button class="btn btn-sm btn-ghost" data-navigate="sites/Artikel.html" data-edit-id="${ADL.escHtml(r.id)}">${ADL.EDIT_SVG}</button>
       ${ADL.deleteBtn('artikel', r.id, r.bezeichnung || r.nr)}
@@ -448,6 +451,7 @@ function buildArtikelDetailHtml(a) {
   });
   document.addEventListener('click', e => {
     if (e.target.closest('button')) return;
+    if (e.target.closest('.qr-cell')) return;
     const tr = e.target.closest('tr[data-artikel-id]');
     if (tr) openDetail(tr.dataset.artikelId);
   });
