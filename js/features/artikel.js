@@ -240,6 +240,63 @@ document.addEventListener('adl:edit-navigate', ({ detail: { editId } }) => {
   ADL.fillArtikelForm(mc, artikel);
 });
 
+/* ---- Bewegungen bei Artikelaktualisierung erfassen ---------------------- */
+
+function erstelleUpdateBewegungen(editId, neuDaten) {
+  const alt = ADLStore.artikel.getById(editId);
+  if (!alt) return;
+
+  const einheit = neuDaten.einheit || alt.einheit || '';
+  const basis = {
+    artikelnummer: neuDaten.artikelnummer || alt.artikelnummer || alt.nr,
+    bezeichnung:   neuDaten.bezeichnung   || alt.bezeichnung,
+    seriennr:      neuDaten.seriennr      || alt.seriennr || '',
+    benutzer:      'System',
+    status:        'Abgeschlossen',
+  };
+
+  const lagerortGeaendert = (alt.lagerort || '') !== (neuDaten.lagerort || '') && neuDaten.lagerort;
+  if (lagerortGeaendert) {
+    ADLStore.bewegungen.add({
+      nr:   ADLStore.bewegungen.nextNr('BWG'), ...basis,
+      typ:  'Umlagerung',
+      von:  alt.lagerort || '—',
+      nach: neuDaten.lagerort,
+    });
+  }
+
+  const altBestand = parseFloat(alt.bestand) || 0;
+  const neuBestand = parseFloat(neuDaten.bestand) || 0;
+  const delta      = neuBestand - altBestand;
+
+  if (delta > 0) {
+    ADLStore.bewegungen.add({
+      nr:               ADLStore.bewegungen.nextNr('BWG'), ...basis,
+      typ:              'Wareneingang',
+      von:              '—',
+      nach:             neuDaten.lagerort || alt.lagerort || 'Lager',
+      transporteinheit: `+${delta} ${einheit}`.trim(),
+    });
+  } else if (delta < 0) {
+    ADLStore.bewegungen.add({
+      nr:               ADLStore.bewegungen.nextNr('BWG'), ...basis,
+      typ:              'Auslagerung',
+      von:              alt.lagerort || 'Lager',
+      nach:             '—',
+      transporteinheit: `${delta} ${einheit}`.trim(),
+    });
+  }
+
+  if ((alt.status || 'Aktiv') !== (neuDaten.status || 'Aktiv')) {
+    ADLStore.bewegungen.add({
+      nr:   ADLStore.bewegungen.nextNr('BWG'), ...basis,
+      typ:  'Statusänderung',
+      von:  alt.status || 'Aktiv',
+      nach: neuDaten.status || 'Aktiv',
+    });
+  }
+}
+
 /* ---- Seiten-Formular speichern ----------------------------------------- */
 
 document.addEventListener('click', e => {
@@ -253,21 +310,23 @@ document.addEventListener('click', e => {
 
   const editId = mc.dataset.artikelEditId;
   if (editId) {
+    erstelleUpdateBewegungen(editId, daten);
     ADLStore.artikel.update(editId, daten);
     delete mc.dataset.artikelEditId;
     ADL.toast(`Artikel „${daten.bezeichnung}" aktualisiert.`);
   } else {
     ADLStore.artikel.add({ nr: ADLStore.artikel.nextNr('ART'), ...daten });
     ADLStore.bewegungen.add({
-      nr:          ADLStore.bewegungen.nextNr('BWG'),
-      artikelnummer: daten.artikelnummer,
-      bezeichnung:   daten.bezeichnung,
-      seriennr:      daten.seriennr,
-      typ:           'Neuanlage',
-      von:           '—',
-      nach:          daten.lagerort || 'Lager',
-      benutzer:      'System',
-      status:        'Abgeschlossen',
+      nr:               ADLStore.bewegungen.nextNr('BWG'),
+      artikelnummer:    daten.artikelnummer,
+      bezeichnung:      daten.bezeichnung,
+      seriennr:         daten.seriennr,
+      typ:              'Neuanlage',
+      von:              '—',
+      nach:             daten.lagerort || 'Lager',
+      transporteinheit: daten.bestand ? `${daten.bestand} ${daten.einheit || ''}`.trim() : '—',
+      benutzer:         'System',
+      status:           'Abgeschlossen',
     });
     ADL.toast(`Artikel „${daten.bezeichnung}" gespeichert.`);
   }
@@ -301,14 +360,17 @@ document.addEventListener('DOMContentLoaded', () => {
       beschreibung:   ADL.getInputValue('m-beschreibung'),
     });
     ADLStore.bewegungen.add({
-      nr:          ADLStore.bewegungen.nextNr('BWG'),
-      artikelnummer, bezeichnung,
-      seriennr:    ADL.getInputValue('m-seriennummer'),
-      typ:         'Neuanlage',
-      von:         '—',
-      nach:        lagerort || 'Lager',
-      benutzer:    'System',
-      status:      'Abgeschlossen',
+      nr:               ADLStore.bewegungen.nextNr('BWG'),
+      artikelnummer,    bezeichnung,
+      seriennr:         ADL.getInputValue('m-seriennummer'),
+      typ:              'Neuanlage',
+      von:              '—',
+      nach:             lagerort || 'Lager',
+      transporteinheit: ADL.getInputValue('m-bestand')
+        ? `${ADL.getInputValue('m-bestand')} ${ADL.getInputValue('m-einheit') || ''}`.trim()
+        : '—',
+      benutzer:         'System',
+      status:           'Abgeschlossen',
     });
     ADL.toast(`Artikel „${bezeichnung}" gespeichert.`);
   });

@@ -59,6 +59,7 @@ ADL.STATUS_COLORS = {
 
   // Sonstige
   'Umlagerung':             'purple',
+  'Statusänderung':         'purple',
   'Planung':                'purple',
   'Niedrig':                'secondary',
   'Inaktiv':                'secondary',
