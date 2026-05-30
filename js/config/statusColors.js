@@ -42,6 +42,7 @@ ADL.STATUS_COLORS = {
   'Abgelehnt (n.i.O.)':    'danger',
   'Defekt':                 'danger',
   'Gesperrt':               'danger',
+  'Ausgelaufen':            'danger',
   'Dringend':               'danger',
   'Notfall':                'danger',
   'Nicht abgeschlossen':    'danger',
